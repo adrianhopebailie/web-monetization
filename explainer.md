@@ -118,7 +118,6 @@ The `document.monetization` object will emit events when monetization starts and
 </head>
 <script>
   if(document.monetization) {
-    let requestId
     document.monetization.addEventListener('monetizationstart', event => {
 
       // User has an open a payment stream
@@ -136,7 +135,7 @@ The `document.monetization` object will emit events when monetization starts and
       // A payment has been received 
 
       // Connect to backend to validate the payment
-      const { amount, assetCode, assetScale } = event.detail
+      const { paymentPointer, requestId, amount, assetCode, assetScale } = event.detail
       if(isValidPayment(paymentPointer, requestId, amount, assetCode, assetScale)) {
         // Hide ads for a period based on amount received
         suspendAdvertising(amount, assetCode, assetScale)

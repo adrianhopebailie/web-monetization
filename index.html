@@ -15,14 +15,17 @@
     "issueBase": "https://www.github.com/WICG/web-monetization/issues/",
     "noLegacyStyle": true,
     "editors": [{
-        name: "adrianhopebailie",
-        email: "adrian@hopebailie.com",
+        name: "Adrian Hope-Bailie",
+        email: "adrian@coil.com",
         company: "Coil Technologies Inc.",
         companyURL: "https://coil.com",
       },
-      // Add additional editors here.
-      // https://github.com/w3c/respec/wiki/editors
-    ],
+      {
+        name: "Ben Sharafian",
+        email: "ben@coil.com",
+        company: "Coil Technologies Inc.",
+        companyURL: "https://coil.com",
+      }],
     "shortName": "web-monetization",
     "specStatus": "CG-DRAFT",
     "subjectPrefix": "[web-monetization]",
@@ -46,40 +49,29 @@
 
 <body>
   <section id="abstract">
-    <p>
-      This specification does neat stuff.
-    </p>
+    Web Monetization is an API that allows websites to request small payments from users facilitated by the browser and the user's Web Monetization provider.
+
+    This specification is a work in progress and will be updated as discussions progress within the WIGC.
   </section>
   <section id="sotd">
-    <p>
-      This is an unofficial proposal.
-    </p>
   </section>
   <section id="introduction">
-    <h2>Introduction</h2>
-    <p>
-      See <a href="https://github.com/w3c/respec/wiki/User's-Guide">ReSpec's
-      user guide</a> for how to get started!
-    </p>
   </section>
-  <section data-dfn-for="Foo">
-    <h2>Start your spec!</h2>
-    <pre class="idl">
-    interface Foo {
-      attribute Bar bar;
-      void doTheFoo();
-    };
-    </pre>
-    <p>
-      See <a href="https://github.com/w3c/respec/wiki/WebIDL-Guide">ReSpec's
-      WebIDL guide</a> for how to write [[!WebIDL-2]] interfaces!
-    </p>
-    <p>
-      The <dfn>doTheFoo</dfn> method.
-    </p>
-    <p>
-      The <dfn>bar</dfn> attribute.
-    </p>
+  <section id="terminology">
+    # Terminology
+     - The **user** is the party who is accessing the web-monetized site.
+     - The **provider** is the party making payments on behalf of the user.
+     - The **browser** is the web browser used by the user.
+  </section>
+  <section id="goals">
+    # Design Goals
+     - Should be extremely simple for webmasters to use in their site.
+     - Backend infrastructure should be optional; should be usable on a static site.
+     - Should not require any interaction with the user.
+     - Should give user's agent a choice about how much to spend, and which sites to support.
+     - Should give advanced webmasters a way to associate payments with their users, in order to unlock premium experiences.
+     - Should pay continuously as the user consumes content.
+     - Should be compatible with existing application and transport protocols on Interledger.  
   </section>
 </body>
 

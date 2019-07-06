@@ -150,7 +150,7 @@ The `document.monetization` object will emit events when monetization starts and
 </script>
 ```
 
-### Browser Behaviour
+## Browser Behaviour
 
 
 A browser supporting Web Monetization exposes a DOM object `document.monetization` that implements [EventTarget](https://developer.mozilla.org/en-US/docs/Web/API/EventTarget) and has a readonly `state` property. Initially the browser sets `document.monetization.state` to `pending`.
@@ -170,3 +170,11 @@ A browser supporting Web Monetization exposes a DOM object `document.monetizatio
  5. Every time the provider processes a payment (including the first payment) it notifies the browser which dispatches a `monetizationprogress` event from `document.monetization`. The event has a `detail` field with an object containing the amount and currency of the payment.
 
  6. Payment continues until the user closes/leaves the page. The provider MAY decide to stop/start payment at any time, e.g. if the user is idle or backgrounds the page.
+
+## Provider Interface
+
+The provider interface is not yet well defined. Coil's extension plays the role of both browser and provider therefore it doesn't explicitly define an interface that other providers might use to integrate with the browser.
+
+One proposal would be to leverage the Payment Handler API but this requires further exploration. 
+ - Payment Handlers are deployed as service workers which have a very specific lifecycle that may not be appropriate for providing an ongoing stream of micropayments. 
+ - The interaction between the website and the handler as defined by the current Payment Handler API is a single request/response exchange and doesn't currently allow for a stream-like interface.

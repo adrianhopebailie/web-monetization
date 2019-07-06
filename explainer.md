@@ -10,7 +10,7 @@ In exchange for payments from the user websites can provide the user with a "pre
 
 Provide websites with a way to collect multiple small payments from users in exchange for consuming the content and/or services on the website.
 
-The experience must be frictionless for users. It must allow users to pre-approve payments in aggregate or delegate the authorization of the individual small payments to a third-party (a Web Monetization provider) that interacts with the website outside without the need for user interaction.
+The experience must be frictionless for users. It must allow users to pre-approve payments in aggregate or delegate the authorization of the individual small payments to a third-party (a Web Monetization provider) that interacts with the website without the need for user interaction.
 
 It should not be possible for websites to identify users on the basis of the payments they make.
 
@@ -18,7 +18,7 @@ It should not be possible for the user's Web Monetization provider to identify w
 
 ## Non-goals
 
-Online purchases. Web Monetization is intended to enable very small payments that can be performed with different levels of user consent to traditional e-commerce involving larger discreet payments.. 
+Online purchases. Web Monetization is intended to enable very small payments. This distinction is important because very small payments can be performed with different levels of user consent to larger payments such as those used in traditional e-commerce. 
 
 
 ## Overview of the Flow
@@ -45,7 +45,9 @@ Further, by decoupling the provider and the service, using the browser as an int
 
 ## Design Decisions
 
-This proposal is modelled on a working deployment that uses a browser extension to provide the necessary browser-side functionality, however there are various design decisions that may be worth discussing further as a community.
+This proposal is modelled on a working deployment (setup by the WM Provider, [Coil](https://coil.com)) that uses a browser extension to provide the necessary browser-side functionality, however there are various design decisions that may be worth discussing further as a community.
+
+By bringing this work to the WICG our goal is to get input from multiple WM Providers and implementors to refine the design and produce a W3C standards-track specification.
 
 ### Declaritive vs Imperative?
 
@@ -77,7 +79,9 @@ For more details see https://interledger.org
 
 ### Payment Pointers
 
-Payment Pointers are a convenient and concise way to express a URL to a secure payment initiation endpoint on the Web. Payment Pointers resolve to an HTTPS endpoint through simple conversion rules allowing systems that offer payment accounts to user to give them a simple and easy to remember identifier for the account that is safe to share with others and is immediately identifiable as a payment account identifier.
+Payment Pointers are a convenient and concise way to express a URL to a secure payment initiation endpoint on the Web. 
+
+Payment Pointers resolve to an HTTPS endpoint using simple conversion rules allowing systems that offer payment accounts to users to give them a simple and easy to remember identifier for the account that is **safe to share** with others and is immediately identifiable as a payment account identifier.
 
 An example of a Payment Pointer is: `$alice.wallet.example` or `$wallet.example/alice`
 These resolve to `https://alice.wallet.example/.well-known/pay` and `https://wallet.example/alice` respectively.
@@ -86,32 +90,62 @@ For more details see https://paymentpointers.org
 
 ## Getting Started
 
-To use Web Monetization a website must have a financial account at a service provider capable of receiving payments via the Interledger protocol. Such a service (a digital wallet or similar) would provide the website with a Payment Pointer that can be used to send payments to that account. E.g. Alice has an account at Secure Wallet Ltd and was given the Payment Pointer `$secure-wallet.example/~alice`
+### Setup a receiving account
 
-The website puts a `<meta>` tag in the header of the HTML document it serves with the `name` attribute equal to `monetization` and the `value` attribute equal to the Payment Pointer where the website will accept payments.
+To use Web Monetization a website owner must have a financial account at a service provider capable of receiving payments via the Interledger protocol. 
 
-When a user visits the page with supported browser the website will find a `document.monetization` object in the DOM. This will have a `state` property that the website can check to determine if the user's provider has started sending payments.
+Such a service (a digital wallet, bank, or similar) would provide the website owner with a _**Payment Pointer**_ that can be used to send payments to that account. 
 
-The `document.monetization` object will emit events when monetizations starts and then subsequently each time a payment is sent successfully by the provider. The start event will contain a unique identifier for the payment stream that the website can use to correlate the payments at its receiver with the user's browser session.
+> **Example:** Alice owns the website at _https://rocknrollblog.example_ and opens an account at _Secure Wallet Ltd._. Secure Wallet tells Alice that the Payment Pointer for her account is `$secure-wallet.example/~alice`.
+
+### Add &lt;meta> tag to website header
+
+The website puts a `<meta>` tag in the header of the HTML documents it serves with the `name` attribute equal to `monetization` and the `value` attribute equal to the Payment Pointer where the website will accept payments.
+
+> **Example:** Alice puts the tag `<meta name="monetization" value="$secure-wallet.example/~alice">` into the `<head>` section of _https://rocknrollblog.example_.
+
+### Handle payments
+
+When a user visits the page with a supported browser the website will find a `document.monetization` object in the DOM. This will have a `state` property that the website can check to determine if the user's provider has started sending payments.
+
+The `document.monetization` object will emit events when monetization starts and then subsequently each time a payment is sent successfully by the provider. The start event will contain a unique identifier for the payment stream that the website can use to correlate the payments at its receiver with the user's browser session.
+
+> **Example:** Alice adds some client-side code to her website that listens for the relevant monetization events and only shows advertising if she isn't receiving payments.
 
 ```html
 <head>
-  <meta name="monetization" value="$alice.wallet.example">
+  <meta name="monetization" value="$secure-wallet.example/~alice">
 </head>
 <script>
   if(document.monetization) {
+    let requestId
     document.monetization.addEventListener('monetizationstart', event => {
+
       // User has an open a payment stream
+
       // Connect to backend to validate the session using the request id
       const { paymentPointer, requestId } = event.detail
-      validateSession(paymentPointer, requestId)
+      if(!isValidSession(paymentPointer, requestId)) {
+        console.error('Invalid requestId for monetization')
+        showAdvertising()
+      }
     })
 
-    document.monetization.addEventListener('monetizationprogress', ({ paymentPointer, requestId }) => {
+    document.monetization.addEventListener('monetizationprogress', event => {
+
       // A payment has been received 
+
+      // Connect to backend to validate the payment
       const { amount, assetCode, assetScale } = event.detail
-      handlePayment(paymentPointer, requestId)
+      if(isValidPayment(paymentPointer, requestId, amount, assetCode, assetScale)) {
+        // Hide ads for a period based on amount received
+        suspendAdvertising(amount, assetCode, assetScale)
+      }
     })
+    // Wait 30 seconds and then show ads
+    setTimeout(showAdvertising, 30000)
+  } else {
+    showAdvertising()
   }
 </script>
 ```
@@ -127,11 +161,15 @@ A browser supporting Web Monetization exposes a DOM object `document.monetizatio
      - If the Web Monetization `<meta>` tags are malformed, the browser will stop here. The browser SHOULD report a warning via the console.
      - If the Web Monetization `<meta>` tags are well-formed, the browser should extract the Payment Pointer.
 
-2. The browser invokes the user's Web Monetization Provider passing it the `requestId` and `paymentPointer`.
-  3. The provider resolves the Payment Pointer and begins to make payments to the website.
-  4. Once the provider has successfully completed the first payment with a non-zero amount, the provider MUST notify the browser, and the browser sets `document.monetization.state` to `started` and then dispatches the `monetizationstart` event on `document.monetization`. The event's type is `monetizationstart`. The event has a `detail` field with an object containing the Payment Pointer and the Request ID ([specified below](#monetizationstart)).
-  5. Every time the provider processes a payment (including the first payment) it notifies the browser which dispatches a `monetizationprogress` event from `document.monetization`.
-  6. Payment continues until the user closes/leaves the page. The provider MAY decide to stop/start payment at any time, e.g. if the user is idle or backgrounds the page.
+ 2. The browser invokes the user's Web Monetization Provider passing it the `requestId` and `paymentPointer`.
+
+ 3. The provider resolves the Payment Pointer and begins to make payments to the website.
+
+ 4. Once the provider has successfully completed the first payment with a non-zero amount, the provider MUST notify the browser, and the browser sets `document.monetization.state` to `started` and then dispatches the `monetizationstart` event on `document.monetization`. The event's type is `monetizationstart`. The event has a `detail` field with an object containing the Payment Pointer and the Request ID ([specified below](#monetizationstart)).
+
+ 5. Every time the provider processes a payment (including the first payment) it notifies the browser which dispatches a `monetizationprogress` event from `document.monetization`. The event has a `detail` field with an object containing the amount and currency of the payment.
+
+ 6. Payment continues until the user closes/leaves the page. The provider MAY decide to stop/start payment at any time, e.g. if the user is idle or backgrounds the page.
 
 
 ------ TEMPLATE -----

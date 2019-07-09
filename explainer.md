@@ -168,6 +168,10 @@ A browser supporting Web Monetization exposes a DOM object `document.monetizatio
 
  6. Payment continues until the user closes/leaves the page. The provider MAY decide to stop/start payment at any time, e.g. if the user is idle or backgrounds the page.
 
+### Auditing / Dashboard
+
+It must be possible for the user to get a summary of payments compiled by the browser. These should be broken down by origin of the websites paid and the provider making the payments to allow the user to reconcile data from websites and providers about how much they have paid.
+
 ## Provider Interface
 
 The provider interface is not yet well defined. Coil's extension plays the role of both browser and provider therefore it doesn't explicitly define an interface that other providers might use to integrate with the browser.

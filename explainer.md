@@ -12,9 +12,7 @@ Provide websites with a way to collect multiple small payments from users in exc
 
 The experience must be frictionless for users. It must allow users to pre-approve payments in aggregate or delegate the authorization of the individual small payments to a third-party (a Web Monetization provider) that interacts with the website without the need for user interaction.
 
-It should not be possible for websites to identify users on the basis of the payments they make.
-
-It should not be possible for the user's Web Monetization provider to identify which websites the user is visiting.
+This system must be privacy preserving as far as practically possible. It must not be possible for websites to identify users on the basis of the payments they make. It must not be possible for the user's Web Monetization provider to get details of a user's browsing history, simply getting the origin of the site being paid should be enough for all practical purposes.
 
 ## Non-goals
 
@@ -69,7 +67,7 @@ In-keeping with the trend toward streaming APIs the API surface could be updated
 
 ## Concepts
 
-Web Monetization depends on two important technologies/concepts that enable open and interoperable payments between providers and websites for very small amounts.
+Web Monetization depends on two critical technologies/concepts that enable open and interoperable payments between providers and websites for very small amounts.
 
 ### Interledger
 

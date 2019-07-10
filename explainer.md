@@ -1,6 +1,6 @@
 # Web Monetization Explainer
 
-Web Monetization is a proposed API standard that allows websites to request a stream of very small payments from a user.
+Web Monetization is a proposed API standard that allows websites to request a stream of very small payments from a user e.g. fractions of a cent. 
 
 This provides a framework for new revenue models for websites and web-based services.
 
@@ -55,7 +55,7 @@ The current proposal is for a hybrid declarative and imperative API whereby webs
 
 The Web Payments WG has designed two APIs that follow a similar pattern to Web Monetization but for a slightly different use case. 
 
-The Payment Request API is an imperative API that websites can use to request a single discreet payment.
+The Payment Request API is an imperative API that websites can use to request a single discrete payment.
 
 This is designed to always prompt the user for authorization as part of the flow as it is designed for payment sizes where this is necessary. However, nothing prevents this API also supporting a non-interactive flow that supports Web Monetization use cases.
 
@@ -155,7 +155,7 @@ A browser supporting Web Monetization exposes a DOM object `document.monetizatio
  1. If the browser finds a valid Payment Pointer in a Web Monetization `<meta>` tag it generates a fresh UUID (version 4) and uses this as the **Request ID** from this point forward. **This Request ID MUST be unique per page load**, not per browser, session nor site.
      - The `<meta>` tags MUST NOT be inserted dynamically using client-side Javascript.
      - The `<meta>` tags MUST be in the `<head>` of the document.
-     - If the Web Monetization `<meta>` tags are malformed, the browser will stop here. The browser SHOULD report a warning via the console.
+     - If the Web Monetization `<meta>` tags are malformed, the browser will abort Monetization processing here. The browser SHOULD report a warning via the console.
      - If the Web Monetization `<meta>` tags are well-formed, the browser should extract the Payment Pointer.
 
  2. The browser invokes the user's Web Monetization Provider passing it the `requestId` and `paymentPointer`.
@@ -170,7 +170,11 @@ A browser supporting Web Monetization exposes a DOM object `document.monetizatio
 
 ### Auditing / Dashboard
 
-It must be possible for the user to get a summary of payments compiled by the browser. These should be broken down by origin of the websites paid and the provider making the payments to allow the user to reconcile data from websites and providers about how much they have paid.
+It must be possible for the user to get a summary of payments compiled by the browser. These should be broken down by origin of the websites paid and the provider making the payments, date and time [the payment provider notified the browser, or the browser despatched the payment? Or both?] to allow the user to reconcile data from websites and providers about how much they have paid.
+
+It should also be possible to tell the browser NOT to pay a particular website any money. (Use case: web user needs to visit Monetized web site with unpalatable viewpoints etc and doesn't want to contribute financially.)
+
+It should also be possible to tell the browser a list of sites which can optionally be paid more than usual sum. (Use case: web user visits favourite charity's website.)
 
 ## Provider Interface
 

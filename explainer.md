@@ -6,6 +6,8 @@ This provides a framework for new revenue models for websites and web-based serv
 
 In exchange for payments from the user websites can provide the user with a "premium" experience such as exclusive content or by removing advertising or even the need to login to access content or services.
 
+[Skip straight to code...](#handle-payments)
+
 ## Goals
 
 Provide websites with a way to collect multiple small payments from users in exchange for consuming the content and/or services on the website.

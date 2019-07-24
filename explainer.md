@@ -14,7 +14,7 @@ Provide websites with a way to collect multiple small payments from users in exc
 
 The experience must be frictionless for users. It must allow users to pre-approve payments in aggregate or delegate the authorization of the individual small payments to a third-party (a Web Monetization provider) that interacts with the website without the need for user interaction.
 
-This system must be privacy preserving as far as practically possible. It must not be possible for websites to identify users on the basis of the payments they make. It must not be possible for the user's Web Monetization provider to get details of a user's browsing history, simply getting the origin of the site being paid should be enough for all practical purposes.
+This system must preserve the user's privacy. It must not be possible for websites to identify users on the basis of the payments they make. It must not be possible for the user's Web Monetization provider to get details of a user's browsing history: simply getting the origin of the site being paid should be enough for all practical purposes.
 
 ## Non-goals
 
@@ -44,7 +44,7 @@ _This flow is simplified to exclude some edge cases. Numbers correspond to the d
   1. When the user visits a website that uses Web Monetization the website provides the browser (via a `meta` tag in the `head` section) with an address at which they wish to receive payments.
   2. The browser instructs the user's WM provider to start sending payments to the website, providing the website's receiving address and a random correlation id (generated for each page refresh or visit).
   3. The user's WM provider opens a payment stream with the website's WM receiver. The correlation id uniquely identifies the stream.
-  4. While the user has the page in focus the WM provider sends payments to the WM receiver.
+  4. While the user has the page in focus the WM provider sends payments to the WM receiver. *(What about people listening to monetised music in a background tab?)*
   5. For each payment sent, the WM provider notifies the browser.
   6. The browser, in turn, raises an event that informs the web page of the payment.
   7. The web page can connect to its own backend systems to verify that the payment was received (using the correlation id to correlate the incoming payments with the current page visit).
@@ -65,9 +65,9 @@ Further, by decoupling the provider and the service, using the browser as an int
 
 ## Design Decisions
 
-This proposal is modelled on a working implementation (setup by the WM Provider, [Coil](https://coil.com)) that uses a browser extension to provide the necessary browser-side functionality, however there are various design decisions that may be worth discussing further as a community.
+This proposal is modelled on a working implementation (setup by the WM Provider, [Coil](https://coil.com)) that uses a browser extension to provide the necessary browser-side functionality. However, there are various design decisions that may be worth discussing further as a community.
 
-By bringing this work to the WICG our goal is to get input from multiple WM providers and implementors to refine the design and produce a W3C standards-track specification.
+By bringing this work to the WICG, our goal is to get input from multiple WM providers and implementors to refine the design and produce a W3C standards-track specification.
 
 ### Declaritive vs Imperative?
 
@@ -85,7 +85,7 @@ Further, the Payment Handler API aligns well with the model anticipated for Web 
 
 ### Streams
 
-In-keeping with the trend toward streaming APIs the API surface could be updated to implement the stream API.
+In-keeping with the trend toward streaming APIs, the API surface could be updated to implement the stream API.
 
 ## Concepts
 

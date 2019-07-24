@@ -14,7 +14,7 @@ Provide websites with a way to collect multiple small payments from users in exc
 
 The experience must be frictionless for users. It must allow users to pre-approve payments in aggregate or delegate the authorization of the individual small payments to a third-party (a Web Monetization provider) that interacts with the website without the need for user interaction.
 
-This system must preserve the user's privacy. It must not be possible for websites to identify users on the basis of the payments they make. It must not be possible for the user's Web Monetization provider to get details of a user's browsing history: simply getting the origin of the site being paid should be enough for all practical purposes.
+This system must preserve the user's privacy. It must not be possible for websites to identify users on the basis of the payments they make. It must not be possible for the user's Web Monetization provider to get details of a user's browsing history.
 
 ## Non-goals
 

@@ -93,7 +93,7 @@ Web Monetization depends on two critical technologies/concepts that enable open 
 
 ### Interledger
 
-The Interledger protocol is an [in-production](https://www.gatesfoundation.org/Media-Center/Press-Releases/2017/10/Bill-Melinda-Gates-Foundation-Releases-Open-Source-Software-to-Expand-Access-to-Financial-Services) secure transport protocol for making payments of any size that can be aggregated and settled over existing payment networks (including those that do not support very small payment sizes or real time payments clearing). The design of the protocol also allows for payments to be made that span multiple underlying settlement networks, improving the interoperability and reach of existing networks.
+Interledger is an [in-production](https://www.gatesfoundation.org/Media-Center/Press-Releases/2017/10/Bill-Melinda-Gates-Foundation-Releases-Open-Source-Software-to-Expand-Access-to-Financial-Services) secure transport protocol for making payments of any size that can be aggregated and settled over existing payment networks (including those that do not support very small payment sizes or real time payments clearing). The design of the protocol also allows for payments to be made that span multiple underlying settlement networks, improving the interoperability and reach of existing networks.
 
 WM providers and WM receivers use the Interledger protocol to exchange payments. The provider and receiver MAY be directly connected or may connect via one or more intermediaries, this will be driven by the regulatory requirements and the status of intermediaries as registered money services businesses.
 

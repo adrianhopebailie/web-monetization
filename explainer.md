@@ -2,7 +2,7 @@
 
 Web Monetization is a proposed API standard that allows websites to request a stream of very small payments from a user e.g. fractions of a cent. 
 
-This provides a framework for new revenue models for websites and web-based services.
+This provides a framework for new revenue models for websites and web-based services, as an alternative to subscription services or advertising, while preserving the user's privacy.
 
 In exchange for payments from the user websites can provide the user with a "premium" experience such as exclusive content or by removing advertising or even the need to login to access content or services.
 

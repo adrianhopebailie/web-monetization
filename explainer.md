@@ -197,7 +197,9 @@ A browser supporting Web Monetization exposes a DOM object `document.monetizatio
 
 It must be possible for the user to get a summary of payments compiled by the browser. These should be broken down by origin of the websites paid and the provider making the payments, date and time [the payment provider notified the browser, or the browser dispatched the payment? Or both?] to allow the user to reconcile data from websites and providers about how much they have paid.
 
-It should also be possible to tell the browser NOT to pay a particular website any money. (Use case: web user needs to visit a monetized web site with unpalatable viewpoints etc and doesn't want to contribute financially.)
+It should also be possible to tell the browser NOT to pay a particular website any money. (Use case: web user needs to visit a monetized web site with unpalatable viewpoints etc and doesn't want to contribute financially.) 
+
+*Bruce reckons that document.monetization shouldn't be present in this case - site should not be able to guess that their site is blocked because document.monetization.state never moves from pending*.
 
 It should also be possible to tell the browser a list of sites which can optionally be paid more than usual sum. (Use case: web user visits favourite charity's website.) **Note:** For privacy reasons the provider does not know which site the user is visiting.
 

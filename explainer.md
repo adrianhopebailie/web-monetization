@@ -27,29 +27,30 @@ Online purchases. Web Monetization is intended to enable very small payments. Th
 
 ### Actors
 
- - Web Monetization Receiver: An entity that accepts payments on behalf of the website. [More details...](./receiving.md)
- - Web Monetization Provider: The entity that sends money on behalf of the user to the website. [More details...](./receiving.md)
- - Browser: The user's browser which has implemented the Web Monetization standard and has an installed/registered WM Provider.
- - Web Page: A page on the monetized website (that contains the necessary `meta` tag defining its receiving address)
+ - **Web Monetization Receiver**: An entity that accepts payments on behalf of the website. [More details...](./receiving.md)
+ - **Web Monetization Provider**: The entity that sends money on behalf of the user to the website. [More details...](./receiving.md)
+ - **Browser**: The user's browser which has implemented the Web Monetization standard and has an installed/registered WM Provider.
+ - **Web Page**: A page on the monetized website (that contains the necessary `meta` tag defining its receiving address)
 
 ### Prerequisites
 
- - Users enroll with one or more **Web Monetization providers (WM provider)**, responsible for making payments to websites on the user's behalf.
- - Websites sign up with (or run their own) **Web Monetization Receiver (WM receiver)**, responsible for accepting payments from WM Providers.
+ - Users enroll with one or more **Web Monetization providers (WM provider)**, responsible for making payments to websites on the user's behalf. The WM provider has a software component registered with the user's browser (_a browser extension, service worker or some other component type, this aspect of the proposal is not yet well defined_).
+ - Websites sign up with (or run their own) **Web Monetization Receiver (WM receiver)**, responsible for accepting payments from their user's WM providers (_e.g. a likely candidate to be a WM receiver would be a digital wallet_).
 
  ### Flow
 
-_This flow is simplified to exclude some edge cases. Numbers correspond to the diagram above_
+_This flow is simplified to exclude some edge cases. Numbers correspond to the diagram above._
 
-  1. When the user visits a website that uses Web Monetization the website provides the browser (via a `meta` tag in the `head` section) with an address at which they wish to receive payments.
-  2. The browser instructs the user's WM provider to start sending payments to the website, providing the website's receiving address and a random correlation id (generated for each page refresh or visit).
-  3. The user's WM provider opens a payment stream with the website's WM receiver. The correlation id uniquely identifies the stream.
-  4. While the user has the page in focus the WM provider sends payments to the WM receiver. *(What about people listening to monetised music in a background tab?)*
+  1. When the user visits a website that uses Web Monetization the website provides the browser (via a `meta` tag in the `head` section) with a **receiving address** for payments.
+  2. The browser instructs the user's WM provider to start sending payments to the website, providing the website's **receiving address** and a **random correlation id** (generated for each page refresh or visit).
+  3. The user's WM provider fetches connection credentials for the website's WM receiving account (providing the the correlation id in the fetch request) and then uses these to open a payment stream with the receiver.
+  4. While the user has the page in focus the WM provider sends payments to the WM receiver.   
+  *(QUESTION: What about people listening to monetised music in a background tab?)*
   5. For each payment sent, the WM provider notifies the browser.
   6. The browser, in turn, raises an event that informs the web page of the payment.
-  7. The web page can connect to its own backend systems to verify that the payment was received (using the correlation id to correlate the incoming payments with the current page visit).
+  7. The web page can connect to its own backend systems to verify that the payment was received (using the correlation id to correlate the incoming payment stream with the current page visit).
   8. When the user moves focus or closes the window the browser notifies the provider.
-  9. The provider closes the stream
+  9. The provider closes the stream.
 
 ## Why is a standard required?
 
@@ -57,19 +58,19 @@ There are many services attempting to provide alternative means to monetize the 
 
 However, most of these require that the user and the creator/producer/service provider join a common network that offers to facilitate the transactions between users and these services.
 
-The result is a fragmented Web of closed content and service silos rather than the global and open Web we desire. Further, users sacrifice their privacy because the service is both, collecting payments from the user and, paying out to the creator/producer/service provider, and is therefor able to correlate these and collect data about which services are used by users.
+The result is a fragmented Web of closed content and service silos, rather than the global and open Web we desire. Further, users sacrifice their privacy because the service is both, collecting payments from the user and, paying out to the creator/producer/service provider. It is therefor able to correlate these and collect data about which services are used by users.
 
 With Web Monetization, WM providers compete for users (as customers) not by trying to build a bigger network of content partners, but by delivering a better service.
 
 Further, by decoupling the provider and the service, using the browser as an intermediary, the privacy of users is protected and payments can't be used to track a user across sites.
 
-## Design Decisions
+## Design Discussion Points
 
-This proposal is modelled on a working implementation (setup by the WM Provider, [Coil](https://coil.com)) that uses a browser extension to provide the necessary browser-side functionality. However, there are various design decisions that may be worth discussing further as a community.
+This proposal is modelled on a working implementation (setup by the WM Provider, [Coil](https://coil.com)) that uses a browser extension to provide the necessary browser-side functionality. However, there are various design decisions that may be worth discussing further as a community as we figure out how this could be built directly into browsers.
 
 By bringing this work to the WICG, our goal is to get input from multiple WM providers and implementors to refine the design and produce a W3C standards-track specification.
 
-### Declaritive vs Imperative?
+### Declaritive vs Imperative API?
 
 The current proposal is for a hybrid declarative and imperative API whereby websites declare their ability to accept micropayments using a `<meta>` tag in the page header and then access the global `monetization` object on the DOM to track incoming payment events and react to these.
 
@@ -85,7 +86,7 @@ Further, the Payment Handler API aligns well with the model anticipated for Web 
 
 ### Streams
 
-In-keeping with the trend toward streaming APIs, the API surface could be updated to implement the stream API.
+In-keeping with the trend toward streaming APIs, the API surface could be updated to implement the stream API rather than repeated events.
 
 ## Concepts
 
@@ -93,7 +94,7 @@ Web Monetization depends on two critical technologies/concepts that enable open 
 
 ### Interledger
 
-Interledger is an [in-production](https://www.gatesfoundation.org/Media-Center/Press-Releases/2017/10/Bill-Melinda-Gates-Foundation-Releases-Open-Source-Software-to-Expand-Access-to-Financial-Services) secure transport protocol for making payments of any size that can be aggregated and settled over existing payment networks (including those that do not support very small payment sizes or real time payments clearing). The design of the protocol also allows for payments to be made that span multiple underlying settlement networks, improving the interoperability and reach of existing networks.
+Interledger is an [in-production](https://www.gatesfoundation.org/Media-Center/Press-Releases/2017/10/Bill-Melinda-Gates-Foundation-Releases-Open-Source-Software-to-Expand-Access-to-Financial-Services) payment messaging protocol for making payments of any size that can be aggregated and settled over existing payment networks (including those that do not support very small payment sizes or real time payments clearing). The design of the protocol also allows for payments to be made that span multiple underlying settlement networks, improving the interoperability and reach of existing networks.
 
 WM providers and WM receivers use the Interledger protocol to exchange payments. The provider and receiver MAY be directly connected or may connect via one or more intermediaries, this will be driven by the regulatory requirements and the status of intermediaries as registered money services businesses.
 
@@ -103,12 +104,12 @@ For more details see https://interledger.org
 
 Payment Pointers are a convenient and concise way to express a URL that points to a secure payment initiation endpoint on the Web. 
 
-Payment Pointers resolve to an HTTPS URL using simple conversion rules, allowing systems that offer payment accounts to users, to give them a simple and easy to remember identifier for the account, that is **safe to share** with others and is immediately identifiable as a payment account identifier.
+Payment Pointers resolve to an HTTPS URL using simple conversion rules, allowing systems that offer payment accounts to users, to give them a simple and easy to remember identifier for the account, that is **safe to share** (i.e. not like a credit card number) with others and is immediately identifiable as a payment account identifier.
 
 An example of a Payment Pointer is: `$alice.wallet.example` or `$wallet.example/alice`
 These resolve to `https://alice.wallet.example/.well-known/pay` and `https://wallet.example/alice` respectively.
 
-Websites that use Web Monetization require a receiving address for their payments (which they will get from their WM receiver) and insert into the appropriate `meta` tag as EITHER a URL or a Payment Pointer.
+Websites that use Web Monetization require a receiving address for their payments (which they will get from their WM receiver) and insert this into the appropriate `meta` tag as EITHER a URL or a Payment Pointer.
 
 For more details see https://paymentpointers.org
 
@@ -120,11 +121,11 @@ To use Web Monetization a website owner must have a financial account at a servi
 
 Such a service (a digital wallet, bank, or similar) would provide the website owner with a _**Payment Pointer**_ that serves as the public address for the account.
 
-> **Example:** Alice owns the website at _https://rocknrollblog.example_ and opens an account at _Secure Wallet Ltd._. Secure Wallet tells Alice that the Payment Pointer for her account is `$secure-wallet.example/~alice`. For privacy reasons Alice might also get the Payment Pointer `$secure-wallet.example/db74f8b4-d6a0-4489-a021-e785e5efb229`
+> **Example:** Alice owns the website at _https://rocknrollblog.example_ and opens an account at _Secure Wallet Ltd._. Secure Wallet tells Alice that the Payment Pointer for her account is `$secure-wallet.example/~alice`. For privacy reasons Alice might also get the Payment Pointer `$secure-wallet.example/db74f8b4-d6a0-4489-a021-e785e5efb229` or be able to generate new addresses on demand (this would be a feature of her WM receiver).
 
-### Add &lt;meta> tag to website header
+### Add &lt;meta&gt; tag to website header
 
-The website puts a `<meta>` tag in the header of the HTML documents it serves with the `name` attribute equal to `monetization` and the `value` attribute equal to the Payment Pointer where the website will accept payments.
+The website puts a `<meta>` tag in the header of the HTML documents it serves with the `name` attribute equal to `monetization` and the `value` attribute equal to the *Payment Pointer* where the website will accept payments.
 
 > **Example:** Alice puts the tag `<meta name="monetization" value="$secure-wallet.example/~alice">` into the `<head>` section of _https://rocknrollblog.example_.
 
@@ -132,7 +133,7 @@ The website puts a `<meta>` tag in the header of the HTML documents it serves wi
 
 When a user visits the page with a supported browser the website will find a `document.monetization` object in the DOM. This will have a `state` property that the website can check to determine if the user's provider has started sending payments.
 
-The `document.monetization` object will emit events when monetization starts and then subsequently each time a payment is sent successfully by the provider. The start event will contain a unique identifier for the payment stream that the website can use to correlate the payments at its receiver with the user's browser session.
+The `document.monetization` object will emit events when monetization starts and then subsequently each time a payment is sent successfully by the provider. The start event will contain a unique identifier for the payment stream that the website can use to correlate the payments at its receiver with the user's current browser session.
 
 > **Example:** Alice adds some client-side code to her website that listens for the relevant monetization events and only shows advertising if she isn't receiving payments.
 
@@ -144,7 +145,7 @@ The `document.monetization` object will emit events when monetization starts and
   if(document.monetization) {
     document.monetization.addEventListener('monetizationstart', event => {
 
-      // User has an open a payment stream
+      // User has an open payment stream
 
       // Connect to backend to validate the session using the request id
       const { paymentPointer, requestId } = event.detail
@@ -165,8 +166,8 @@ The `document.monetization` object will emit events when monetization starts and
         suspendAdvertising(amount, assetCode, assetScale)
       }
     })
-    // Wait 30 seconds and then show ads
-    setTimeout(showAdvertising, 30000)
+    // Wait 30 seconds and then show ads if advertising is no longer suspended
+    setTimeout(maybeShowAdvertising, 30000)
   } else {
     showAdvertising()
   }
@@ -195,7 +196,7 @@ A browser supporting Web Monetization exposes a DOM object `document.monetizatio
 
 ### Auditing / Dashboard
 
-It must be possible for the user to get a summary of payments compiled by the browser. These should be broken down by origin of the websites paid and the provider making the payments, date and time [the payment provider notified the browser, or the browser dispatched the payment? Or both?] to allow the user to reconcile data from websites and providers about how much they have paid.
+It must be possible for the user to get a summary of payments compiled by the browser. These should be broken down by origin of the websites paid and the WM provider making the payments, date and time to allow the user to reconcile data from websites and WM providers about how much they have paid.
 
 It should also be possible to tell the browser NOT to pay a particular website any money. (Use case: web user needs to visit a monetized web site with unpalatable viewpoints etc and doesn't want to contribute financially.) 
 
@@ -209,4 +210,4 @@ The provider interface is not yet well defined. Coil's extension plays the role 
 
 One proposal would be to leverage the Payment Handler API but this requires further exploration. 
  - Payment Handlers are deployed as service workers which have a very specific life-cycle that may not be appropriate for providing an ongoing stream of micropayments. 
- - The interaction between the website and the handler as defined by the current Payment Handler API is a single request/response exchange and doesn't currently allow for a stream-like interface.
+ - The interaction between the website and the handler, as defined by the current Payment Handler API, is a single request/response exchange and doesn't currently allow for a stream-like interface.

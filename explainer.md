@@ -37,7 +37,7 @@ Online purchases. Web Monetization is intended to enable very small payments. Th
  - Users enroll with one or more **Web Monetization providers (WM provider)**, responsible for making payments to websites on the user's behalf. The WM provider has a software component registered with the user's browser (_a browser extension, service worker or some other component type, this aspect of the proposal is not yet well defined_).
  - Websites sign up with (or run their own) **Web Monetization Receiver (WM receiver)**, responsible for accepting payments from their user's WM providers (_e.g. a likely candidate to be a WM receiver would be a digital wallet_).
 
- ### Flow
+### Flow
 
 _This flow is simplified to exclude some edge cases. Numbers correspond to the diagram above._
 

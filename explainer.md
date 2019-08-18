@@ -66,7 +66,7 @@ Further, by decoupling the provider and the service, using the browser as an int
 
 ## Design Discussion Points
 
-This proposal is modelled on a working implementation (setup by the WM Provider, [Coil](https://coil.com)) that uses a browser extension to provide the necessary browser-side functionality. However, there are various design decisions that may be worth discussing further as a community as we figure out how this could be built directly into browsers.
+This proposal is modelled on a working implementation that uses a browser extension to provide the necessary browser-side functionality. However, there are various design decisions that may be worth discussing further as a community as we figure out how this could be built directly into browsers.
 
 By bringing this work to the WICG, our goal is to get input from multiple WM providers and implementors to refine the design and produce a W3C standards-track specification.
 
@@ -212,7 +212,7 @@ It should also be possible to tell the browser a list of sites which can optiona
 
 ## Provider Interface
 
-The provider interface is not yet well defined. Coil's extension plays the role of both browser and provider therefore it doesn't explicitly define an interface that other providers might use to integrate with the browser.
+The provider interface is not yet well defined. The current implementation is a browser extension which plays the role of both browser and provider therefore it doesn't explicitly define an interface that other providers might use to integrate with the browser.
 
 One proposal would be to leverage the Payment Handler API but this requires further exploration. 
  - Payment Handlers are deployed as service workers which have a very specific life-cycle that may not be appropriate for providing an ongoing stream of micropayments. 

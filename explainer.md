@@ -129,6 +129,10 @@ The website puts a `<meta>` tag in the header of the HTML documents it serves wi
 
 > **Example:** Alice puts the tag `<meta name="monetization" value="$secure-wallet.example/~alice">` into the `<head>` section of _https://rocknrollblog.example_.
 
+Web Monetization only works on secure pages served over HTTPS (or http://localhost for testing), in order to  preclude bad actors like ISPs injecting their own &lt;meta&gt; tags onto pages. (See https://github.com/adrianhopebailie/web-monetization/issues/5#issue-481528615). 
+
+
+
 ### Handle payments
 
 When a user visits the page with a supported browser the website will find a `document.monetization` object in the DOM. This will have a `state` property that the website can check to determine if the user's provider has started sending payments.

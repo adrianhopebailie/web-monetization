@@ -221,3 +221,22 @@ The provider interface is not yet well defined. The current implementation is a 
 One proposal would be to leverage the Payment Handler API but this requires further exploration. 
  - Payment Handlers are deployed as service workers which have a very specific life-cycle that may not be appropriate for providing an ongoing stream of micropayments. 
  - The interaction between the website and the handler, as defined by the current Payment Handler API, is a single request/response exchange and doesn't currently allow for a stream-like interface.
+ 
+## Existing Implementations
+
+Please submit a PR if you are aware of updates to the lists below.
+
+### WM Receivers
+
+- [XRP Tipbot](https://www.xrptipbot.com/)
+- [Stronghold](https://stronghold.co/)
+
+### WM Providers
+
+- [Coil](https://coil.com)
+
+
+### Browsers
+- [Chrome (Desktop) + Coil extension](https://chrome.google.com/webstore/detail/coil/locbifcbeldmnphbgkdigjmkbfkhbnca)
+- [Firefox (Desktop or Android) + Coil extension](https://addons.mozilla.org/en-US/firefox/addon/coil/)
+- [Puma Browser](https://www.pumabrowser.com/)

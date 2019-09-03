@@ -1,16 +1,16 @@
 # Receiving Payments
 
-When a user has a Web Monetization (WM) provider registered/installed in their browser and they visit a monetized website the browser activates the user's WM provider passing it the receiving address for payments to the website.
+When a user has Web Monetization (WM) enabled in their browser and they visit a monetized website the browser resolves a unique receiving address per session for payments to the website.
 
-The user's provider then begins sending payments to the website's receiving address.
+The browser then begins sending payments to the website's receiving address through the WM Sender.
 
 This page describes the functions of the Web Monetization Receiver and how existing payment services might become a WM receiver.
 
-## Receiving Address
+## Payment Pointer
 
-The receiving address that a website provides is either a [Payment Pointer](https://paymentpointers.org) or a URL from which the user's WM provider fetches connection details to [open a payment stream](#open-a-stream) with the receiver.
+The website specifies a [Payment Pointer](https://paymentpointers.org) from which the browser fetches connection details to [open a payment stream](#open-a-stream) with the receiver.
 
-Since the address is a URL (or a Payment Pointer that resolves to a URL) it is possible for the host of the address to redirect the provider to an alternate address using standard HTTP redirects.
+Since the Payment Pointer is a URL it is possible for the host of the Payment Pointer to redirect the browser to an alternate address using standard HTTP redirects.
 
 ## Receiving Payments
 
@@ -24,7 +24,7 @@ To accept a stream of micropayments on behalf of its users a WM receiver MUST su
 
 #### Simple Payment Setup Protocol (HTTPS)
 
-The receiver must host a secure HTTP endpoint that can generate unique connection credentials for each WM provider that requests them at this URL.
+The receiver must host a secure HTTP endpoint that can generate unique connection credentials for each client that requests them at this URL.
 
 ##### Example: Respond to an SPSP request
  - *Alice* is a customer of *Secure Wallet* who are able to act as a WM Receiver.
@@ -36,9 +36,9 @@ The receiver must host a secure HTTP endpoint that can generate unique connectio
 
 #### Interledger Protocol
 
-The next service that the receiver MUST setup is a link into the Interledger network. More specifically, the receiver must have an Interledger connection (direct or indirect) to any WM providers that wish to pay the WM receiver.
+The next service that the receiver MUST setup is a link into the Interledger network. More specifically, the receiver must have an Interledger connection (direct or indirect) to any WM senders that wish to pay the WM receiver.
 
-Initially we expect the number of providers and receivers to be small and they will likely connect to each other directly but in time there will be a need for intermediary aggregators that are licensed to accept payments from providers and aggregate and pay these out to receivers.
+Initially we expect the number of senders and receivers to be small and they will likely connect to each other directly but in time there will be a need for intermediary aggregators that are licensed to accept payments from senders and aggregate and pay these out to receivers.
 
 #### STREAM Protocol
 
@@ -46,6 +46,6 @@ The STREAM protocol is used to establish packet switched connections between ent
 
 For the purposes of being a WM receiver an entity only needs to run a STREAM server, accept connections and handle the incoming payments sent over the connection.
 
-The ILP Address and shared secret acquired by the WM provider through SPSP ([see above](#-Simple-Payment-Setup-Protocol-HTTPS)) is used to establish a STREAM connection with the WM receiver, following which a stream of payments can be made to the receiver until finally the stream is closed by the client.
+The ILP Address and shared secret acquired by the browser through SPSP ([see above](#-Simple-Payment-Setup-Protocol-HTTPS)) is used by the WM sender to establish a STREAM connection with the WM receiver, following which a stream of payments can be made to the receiver until finally the stream is closed by the client.
 
 Each set of connection parameters (ILP Address and shared secret) is unique and allows the receiver to correlate the original SPSP request with the incoming connection. This makes it easier for receivers to associate incoming payments with different user accounts and Web Monetization sessions.

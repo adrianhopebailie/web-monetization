@@ -321,23 +321,24 @@ has a readonly `state` property. Initially the browser sets
     it should pay the current website. If the result is 0 it aborts.
 
 3.  The browser resolves the Payment Pointer and gets a unique
-    `Interledger Address` and `Shared Secret` to use for the current session.
+    `Interledger Address` and `Shared Secret` to use for the current session. It
+    then begins sending payments via the WM Sender.
 
-4.  The browser invokes the user's Web Monetization Sender passing it the
-    `Interledger Address` and `Shared Secret` and an `amount` to send.
+4.  The browser invokes the user's Web Monetization Sender
+    [by emitting new `PaymentRequestEvent` events](./sending.md) with the
+    necessary details.
 
 5.  Once the sender has successfully completed the first payment with a non-zero
-    amount, the sender MUST notify the browser, and the browser sets
-    `document.monetization.state` to `started` and then dispatches the
-    `monetizationstart` event on `document.monetization`. The event's type is
-    `monetizationstart`. The event has a `detail` field with an object
-    containing the Payment Pointer and the Session ID.
+    amount, the browser sets `document.monetization.state` to `started` and then
+    dispatches the `monetizationstart` event on `document.monetization`. The
+    event's type is `monetizationstart`. The event has a `detail` field with an
+    object containing the Payment Pointer and the Session ID.
 
 6.  The browser continues to send payments at the calculated rate. Every time
-    the sender completes a payment (including the first payment) it notifies the
-    browser which dispatches a `monetizationprogress` event from
-    `document.monetization`. The event has a `detail` field with an object
-    containing the amount and currency of the payment.
+    the it completes a payment (including the first payment) it dispatches a
+    `monetizationprogress` event from `document.monetization`. The event has a
+    `detail` field with an object containing the amount and currency of the
+    payment.
 
 7.  Payment continues until the user closes/leaves the page. The browser MAY
     decide to stop/start payment at any time, e.g. if the user is idle or

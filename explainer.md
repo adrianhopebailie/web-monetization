@@ -84,8 +84,9 @@ diagram above._
    from the website's **WM Receiver**.
 5. While the user has the page in focus the browser begins initiating payments
    at the calculated rate to the website, using the user's **WM Sender**.
-   _(QUESTION: What about people listening to monetised music in a background
-   tab?)_
+   _(**ISSUE**: What about people listening to monetised music in a background
+   tab? See
+   [Issue #12](https://github.com/adrianhopebailie/web-monetization/issues/12))_
 6. The **WM Sender** sends the payment to the **WM Receiver**.
 7. The **WM Sender** notifies the browser of successful payments.
 8. The browser, in turn, raises an event that informs the web page of the
@@ -184,16 +185,18 @@ For more details see https://interledger.org
 Payment Pointers are a convenient and concise way to express a URL that points
 to a secure payment initiation endpoint on the Web.
 
-Payment Pointers resolve to an HTTPS URL using simple conversion rules, allowing
-systems that offer payment accounts to users, to give them a simple and easy to
-remember identifier for the account, that is **safe to share** with 3rd parties
-(i.e. not like a credit card number) and is immediately identifiable as a
-payment account identifier.
+Payment Pointers resolve to an HTTPS URL using simple conversion rules.
 
-An example of a Payment Pointer is: `$alice.wallet.example` or
-`$wallet.example/alice` These resolve to
-`https://alice.wallet.example/.well-known/pay` and
-`https://wallet.example/alice` respectively.
+Using Payment Pointers, systems that offer payment accounts to users can to give
+them a simple and easy to remember identifier for the account, that is **safe to
+share** with 3rd parties (i.e. not like a credit card number) and is immediately
+identifiable as a payment account identifier.
+
+> An example of a Payment Pointer is: `$alice.wallet.example` or
+> `$wallet.example/alice`
+>
+> These resolve to `https://alice.wallet.example/.well-known/pay` and
+> `https://wallet.example/alice` respectively.
 
 Websites that use Web Monetization require a receiving address for their
 payments (which they will get from their WM receiver) and insert this into the
@@ -234,8 +237,9 @@ Web Monetization only works on secure pages served over HTTPS (or
 http://localhost for testing), in order to preclude bad actors like ISPs
 injecting their own &lt;meta&gt; tags onto pages.
 
-> See
-> https://github.com/adrianhopebailie/web-monetization/issues/5#issue-481528615
+> **ISSUE:** How dow we ensure only legitimate tags are parsed by the browser?
+>
+> See [Issue #5](https://github.com/adrianhopebailie/web-monetization/issues/5)
 
 ### Handle payments
 
@@ -296,6 +300,14 @@ current browser session.
   }
 </script>
 ```
+
+> **ISSUE:** Should the amount in the `monetizationprogress` event use the
+> existing
+> [`PaymentCurrencyAmount`](https://www.w3.org/TR/payment-request/#paymentcurrencyamount-dictionary)
+> type?
+>
+> See
+> [Issue #11](https://github.com/adrianhopebailie/web-monetization/issues/11)
 
 ## Browser Behaviour
 
@@ -365,20 +377,10 @@ charity's website.)
 
 ## WM Sender Interface
 
-The WM Sender interface is not yet well defined. The current implementation is a
-browser extension which plays the role of both browser and sender therefore it
-doesn't explicitly define an interface that other senders might use to integrate
-with the browser.
+The WM Sender interface leverages the
+[Payment Handler API](https://www.w3.org/TR/payment-handler/).
 
-One proposal would be to leverage the Payment Handler API but this requires
-further exploration.
-
-- Payment Handlers are deployed as service workers which have a very specific
-  life-cycle that may not be appropriate for providing an ongoing stream of
-  micropayments.
-- The interaction between the website and the handler, as defined by the current
-  Payment Handler API, is a single request/response exchange and doesn't
-  currently allow for a stream-like interface.
+More details are provided [here](./sending.md)
 
 ## Existing Implementations
 

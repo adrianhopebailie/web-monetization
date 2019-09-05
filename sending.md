@@ -45,16 +45,21 @@ If the Payment Handler is unable to send in the specified currency then it
 should call `PaymentRequestEvent.respondWith()` and provide a rejected Promise
 indicating that the payment failed.
 
-> Question: Do we need to indicate WHY this payment failed? Maybe an error code?
+> **ISSUE**: Do we need to indicate WHY this payment failed? Maybe an error code?
+> 
+> See [Issue #13](https://github.com/adrianhopebailie/web-monetization/issues/13)
 
 When it has completed the payment it invokes `PaymentRequestEvent.respondWith()`
 passing in a Promise that resolves to an instance of
 [`MonetizationResponse`](#monetizationresponse-dictionary) containing the
 fulfillment and data from the response.
 
-> Question: The `PaymentRequestEvent` currently includes the origin of the
+> **ISSUE**: The `PaymentRequestEvent` currently includes the origin of the
 > calling website. Should this be removed for Monetization to preserve the
 > user's privacy?
+> 
+> See [Issue #10](https://github.com/adrianhopebailie/web-monetization/issues/10)
+
 
 ### `MonetizationRequest` Dictionary
 

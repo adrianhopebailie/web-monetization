@@ -11,10 +11,7 @@
       'use strict'
       // See https://github.com/w3c/respec/wiki/ for how to configure ReSpec
       var respecConfig = {
-        doRDFa: false,
-        githubAPI: 'https://api.github.com/repos/WICG/web-monetization',
-        issueBase: 'https://www.github.com/WICG/web-monetization/issues/',
-        noLegacyStyle: true,
+        github: 'adrianhopebailie/web-monetization',
         editors: [
           {
             name: 'Adrian Hope-Bailie',
@@ -35,30 +32,18 @@
           }
         ],
         shortName: 'web-monetization',
-        specStatus: 'CG-DRAFT',
-        subjectPrefix: '[web-monetization]',
-        wg: 'WICG',
+        specStatus: 'unofficial',
         xref: 'web-platform',
-        otherLinks: [
-          {
-            key: 'Repository',
-            data: [
-              {
-                value: 'We are on Github.',
-                href: 'https://github.com/WICG/web-monetization'
-              },
-              {
-                value: 'File a bug.',
-                href: 'https://github.com/WICG/web-monetization/issues'
-              },
-              {
-                value: 'Commit history.',
-                href:
-                  'https://github.com/WICG/web-monetization/commits/gh-pages'
-              }
-            ]
+        localBiblio: {
+          "Interledger": {
+            title: "Interledger Protocol (ILP)",
+            href: "https://interledger.org/rfcs/0003-interledger-protocol/"
+          },
+          "SPSP": {
+            "title": "Simple Payments Setup Protocol"
+            "href": "https://interledger.org/rfcs/0009-simple-payment-setup-protocol",
           }
-        ]
+        }
       }
     </script>
   </head>
@@ -87,25 +72,25 @@
         <dd>the party who is accessing the web-monetized website.</dd>
         <dt><dfn>Website</dfn>:</dt>
         <dd>the web-monetized website.</dd>
-        <dt><dfn>Web Monetization provider</dfn>:</dt>
+        <dt><dfn data-lt="provider">Web Monetization provider</dfn>:</dt>
         <dd>the party making payments on behalf of the user.</dd>
         <dt><dfn>Web Monetization receiver</dfn>:</dt>
         <dd>the party receiving payments on behalf of the website.</dd>
-        <dt><dfn>Browser</dfn>:</dt>
-        <dd>is the web browser used by the user.</dd>
+        <dt><dfn>User agent</dfn>:</dt>
+        <dd>the web browser used by the user.</dd>
       </dl>
     </section>
     <section id="goals" class="informative">
       <h2>Goals</h2>
       <ul>
-        <li>Should be extremely simple for webmasters to use in their site.</li>
+        <li>Should be simple for webmasters to use in their site.</li>
         <li>
           Backend infrastructure should be optional; should be usable on a
           static site.
         </li>
-        <li>Should not require any interaction with the user.</li>
+        <li>Interaction with the user should be optional.</li>
         <li>
-          Should give user's agent a choice about how much to spend, and which
+          The user retains control over how much to spend, and which
           sites to support.
         </li>
         <li>
@@ -114,62 +99,62 @@
         </li>
         <li>Should pay continuously as the user consumes content.</li>
         <li>
-          Should be compatible with existing application and transport protocols
-          on Interledger.
+          Should be compatible with existing application and transport protocols, such as
+          the [[[Interledger]]].
         </li>
       </ul>
     </section>
-    <section id="relation-to-other-protocols">
-      <h2>Relation to Other Protocols</h2>
+    <section id="relation-to-other-protocols" class="informative">
+      <h2>Relation to other protocols</h2>
       <p>
         The W3C have published two payments related APIs for browsers, the
-        Payment Request API and the Payment Handler API.
+        [[[payment-Request]]] and the [[[Payment-Handler]]].
       </p>
       <p>
-        The reason this API is not using the Payment Request API directly is
+        The reason this API is not using the [[[payment-Request]]] directly is
         that Web Monetization is intended for continuous payments rather than
-        discrete payments. It is also not designed to have any user interaction.
+        discrete payments. It is also designed to <em>not</em> have any user interaction:
         It is intended to provide a direct alternative to advertisements, rather
-        than an alternative to existing checkout methods.
+        than an alternative to traditional e-commerce checkout methods.
       </p>
       <p>
-        Some changes will be required to Payment Request and Payment Handler to
-        fully support Web Monetization in future, however this API brings the
-        necessary features to the browser in a way that allows for tighter
-        integration in the future.
+        In future, some changes will be required to the [[[payment-Request]]] and the [[[Payment-Handler]]] to
+        support Web Monetization. This API brings the
+        necessary capabilities to user agents in a manner that can integrate with existing payments APIs.
       </p>
       <p>
-        With advertisements, the user's browser decides whether to display the
+        With advertisements, the user agent decides whether to display the
         ads and the user decides whether to engage with the ads. With Web
         Monetization, the user's provider decides whether to pay the site and,
         if so, how much to pay.
       </p>
       <p>
-        Web Monetization makes use of SPSP on top of ILP/STREAM to provide a
+        Web Monetization makes use of <abbr title="Simple Payment Setup Protocol">SPSP</abbr> on top of <abbr title="Interledger Protocol">ILP</abbr>/STREAM to provide a
         high-level way to send money and data, while still providing tremendous
         flexibility.
       </p>
     </section>
+    <section>
+      <h2>Extensions  to the `Document` interface</h2>
+      <pre class="idl">
+        partial interface Document {
+          readonly attribute Monetization monetization;
+        };
+      </pre>
+    </section>
     <section id="flow">
       <h2>Flow</h2>
       <p>
-        This flow refers to the user&apos;s <strong>browser</strong> and the
-        user&apos;s <strong>provider</strong>,
-        <a href="#terminology">defined above</a>.
+        This flow refers to the <a>user agent</a> and the
+        user's <a>provider</a>.
       </p>
-      <ul>
-        <li>The user&apos;s browser navigates to a webpage.</li>
+      <ol>
         <li>
-          The user&apos;s browser sets <code>document.monetization</code> to an
-          instance of {{ Monetization }}.
-        </li>
-        <li>
-          The user&apos;s browser sets
-          <code>document.monetization.state</code> to <code>pending</code>.
+          The <a>user agent</a> sets {{Monetization/state}} to "{{MonetizationState/pending}}".
         </li>
         <li>
           <p>
-            The user&apos;s browser observes the <code>&lt;head&gt;</code> and
+            The <a>user agent</a> observes the <code>&lt;head&gt;</code> and
             looks for a Web Monetization
             <code>&lt;meta name=&quot;monetization&quot;&gt;</code> tag (<a
               href="#meta-tags-set"
@@ -202,7 +187,7 @@
           <ul>
             <li>
               If any of the Web Monetization <code>&lt;meta&gt;</code> Tags Set
-              are malformed, the browser will stop here. The user&apos;s browser
+              are malformed, the browser will stop here. The <a>user agent</a>
               SHOULD report a warning via the console.
             </li>
             <li>
@@ -217,15 +202,15 @@
               Url).
             </li>
             <li>
-              The user&apos;s browser generates a fresh
+              The <a>user agent</a> generates a fresh
               <strong>random</strong> UUID (version 4) and uses this as a
               Monetization ID. This MUST be regenerated upon dynamic changes to
               the meta tags and MUST be unique per page load in order to avoid
               user tracking.
             </li>
             <li>
-              The user&apos;s browser passes these payment details to the
-              user&apos;s provider (see
+              The <a>user agent</a> passes these payment details to the
+              user's provider (see
               <a href="#payment-handler-flow">Payment Handler Flow</a>).
             </li>
             <li>
@@ -260,7 +245,7 @@
               non-zero amount, the provider notifies the browser:
               <ul>
                 <li>
-                  The user&apos;s browser sets
+                  The <a>user agent</a> sets
                   <code>document.monetization.state</code> to
                   <code>started</code>.
                 </li>
@@ -274,7 +259,7 @@
                   as properties.
                 </li>
                 <li>
-                  The user&apos;s browser also emits a
+                  The <a>user agent</a> also emits a
                   {{ monetizationprogress }} event from
                   <code>document.monetization</code>, corresponding to this
                   first packet. If there are no listeners the event MAY NOT be
@@ -294,7 +279,7 @@
                 <li>
                   If the STREAM connection is severed, the provider will redo
                   the SPSP query to the same Payment Setup Endpoint as before
-                  with the same Monetization ID. The user&apos;s browser MUST
+                  with the same Monetization ID. The <a>user agent</a> MUST
                   NOT re-process the <code>&lt;meta&gt;</code> Tags Set.
                 </li>
                 <li>
@@ -309,17 +294,17 @@
                 <li>
                   When a stream is closed the
                   <code>document.monetization.state</code> MUST be set back to
-                  &apos;pending&apos;
+                  'pending'
                 </li>
               </ul>
             </li>
           </ul>
         </li>
-      </ul>
+      </ol>
       <h3 id="payment-handler-flow">Payment Handler Flow</h3>
       <p>
         A provider can be implemented as a Payment Handler supporting the
-        &apos;webmonetization&apos; payment method (The payment method
+        'webmonetization' payment method (The payment method
         specification for this payment method is still under development as it
         is dependant on changes to the Payment Handler API that support
         streaming payments). Communication between the browser and the provider
@@ -350,7 +335,7 @@
       </pre>
       <ul>
         <li>
-          The user&apos;s browser calls <code>.show()</code> on this
+          The <a>user agent</a> calls <code>.show()</code> on this
           PaymentRequest, triggering the
           <a href="https://www.w3.org/TR/payment-handler/">PaymentHandler</a>
           for <code>webmonetization</code>. This PaymentHandler is how the
@@ -381,9 +366,9 @@
       <section id="meta-tags-set">
         <h2>Meta Tags Set</h2>
         <p>
-          The <code>&lt;meta&gt;</code> Tags Set MUST be in the document&apos;s
+          The <code>&lt;meta&gt;</code> Tags Set MUST be in the document's
           <code>&lt;head&gt;</code>. The <code>&lt;meta&gt;</code> Tags Set
-          allows the user&apos;s browser to pay a site via Web Monetization by
+          allows the <a>user agent</a> to pay a site via Web Monetization by
           specifying a
           <a href="https://paymentpointers.org">Payment Pointer</a> or
           <a
@@ -418,7 +403,7 @@
               <td>
                 The
                 <a href="https://paymentpointers.org">Payment Pointer</a>
-                or SPSP url that the user&apos;s browser will pay to.
+                or SPSP url that the <a>user agent</a> will pay to.
               </td>
             </tr>
           </tbody>
@@ -435,8 +420,7 @@
         <pre class="idl">
               [Exposed=Window]
               interface Monetization : EventTarget {
-                readonly attribute DOMString state;
-    
+                readonly attribute MonetizationState state;
                 attribute EventHandler onmonetizationstart;
                 attribute EventHandler onmonetizationprogress;
               };
@@ -446,17 +430,17 @@
           <dt><dfn>state</dfn> attribute</dt>
           <dd>
             A {{ Monetization }}'s <a>state</a> attribute exposes the current
-            state of Web Monetization.
+            state of Web Monetization as a {{MonetizationState}} enum value.
           </dd>
           <dt><dfn>onmonetizationstart</dfn> attribute</dt>
           <dd>
-            A {{ Monetization }}'s <a>onmonetizationstart</a> attribute is an
+            A {{ Monetization }}'s {{onmonetizationstart}} attribute is an
             {{ EventHandler }} for a {{ MonetizationStartEvent }} named
             "<a>monetizationstart</a>".
           </dd>
           <dt><dfn>onmonetizationprogress</dfn> attribute</dt>
           <dd>
-            A {{ Monetization }}'s <a>onmonetizationprogress</a> attribute is an
+            A {{ Monetization }}'s {{onmonetizationprogress}} attribute is an
             {{ EventHandler }} for an {{ MonetizationStartEvent }} named
             "<a>monetizationprogress</a>".
           </dd>
@@ -545,8 +529,9 @@
         >
           <h2><dfn>MonetizationStartEvent</dfn> interface</h2>
           <pre class="idl">
-              [Constructor(DOMString type, optional MonetizationStartEventInit eventInitDict = {}), SecureContext, Exposed=Window]
+              [SecureContext, Exposed=Window]
               interface MonetizationStartEvent : Event {
+                constructor(DOMString type, optional MonetizationStartEventInit eventInitDict = {});
                 readonly attribute DOMString paymentPointer;
                 readonly attribute DOMString requestId;
               };
@@ -575,7 +560,7 @@
             <h3><dfn>MonetizationStartEventInit</dfn> dictionary</h3>
             <p>
               Dispatched once the first ILP packet with a non-zero amount has
-              been fulfilled by the page&apos;s SPSP receiver. MUST be
+              been fulfilled by the page's SPSP receiver. MUST be
               dispatched at least once if payment occurs.
             </p>
             <pre class="idl">
@@ -606,15 +591,16 @@
           <h2><dfn>MonetizationProgressEvent</dfn> interface</h2>
           <p>
             Dispatched every time an ILP packet with a non-zero amount has been
-            fulfilled by the page&apos;s Web Monetization receiver (including
+            fulfilled by the page's Web Monetization receiver (including
             the first time, when
             <code>monetizationstart</code> is also dispatched). This event MAY
             NOT be emitted if there are no listeners for it on
             <code>document.monetization</code>.
           </p>
           <pre class="idl">
-              [Constructor(DOMString type, optional MonetizationProgressEventInit eventInitDict = {}), SecureContext, Exposed=Window]
+              [SecureContext, Exposed=Window]
               interface MonetizationProgressEvent : Event {
+                constructor(DOMString type, optional MonetizationProgressEventInit eventInitDict = {});
                 readonly attribute DOMString amount;
                 readonly attribute DOMString assetCode;
                 readonly attribute DOMString assetScale;
@@ -666,7 +652,7 @@
               </dd>
               <dt><dfn>assetCode</dfn> member</dt>
               <dd>
-                The three letter asset code describing the amount&apos;s units.
+                The three letter asset code describing the amount's units.
               </dd>
               <dt><dfn>assetScale</dfn> member</dt>
               <dd>

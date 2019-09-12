@@ -40,7 +40,7 @@
             href: "https://interledger.org/rfcs/0003-interledger-protocol/"
           },
           "SPSP": {
-            "title": "Simple Payments Setup Protocol"
+            "title": "Simple Payments Setup Protocol",
             "href": "https://interledger.org/rfcs/0009-simple-payment-setup-protocol",
           }
         }
@@ -154,7 +154,7 @@
         </li>
         <li>
           <p>
-            The <a>user agent</a> observes the <code>&lt;head&gt;</code> and
+            The <a>user agent</a> observes the [^head^] and
             looks for a Web Monetization
             <code>&lt;meta name=&quot;monetization&quot;&gt;</code> tag (<a
               href="#meta-tags-set"
@@ -168,11 +168,11 @@
               given time
             </li>
             <li>
-              The <code>&lt;meta&gt;</code> Tags Set MUST be in the
-              <code>&lt;head&gt;</code> of the document.
+              The `&lt;meta&gt;` Tags Set MUST be in the
+              [^head^] of the document.
             </li>
             <li>
-              The <code>&lt;meta&gt;</code> Tags Set MUST be in the top level
+              The `&lt;meta&gt;` Tags Set MUST be in the top level
               window (i.e. not inside an iframe)
             </li>
           </ul>
@@ -186,7 +186,7 @@
           </p>
           <ul>
             <li>
-              If any of the Web Monetization <code>&lt;meta&gt;</code> Tags Set
+              If any of the Web Monetization `&lt;meta&gt;` Tags Set
               are malformed, the browser will stop here. The <a>user agent</a>
               SHOULD report a warning via the console.
             </li>
@@ -251,7 +251,7 @@
                 </li>
                 <li>
                   This MUST occur before the
-                  <code>monetizationstart</code> event is fired.
+                  `monetizationstart` event is fired.
                 </li>
                 <li>
                   This event is a {{ MonetizationStartEvent }}
@@ -280,7 +280,7 @@
                   If the STREAM connection is severed, the provider will redo
                   the SPSP query to the same Payment Setup Endpoint as before
                   with the same Monetization ID. The <a>user agent</a> MUST
-                  NOT re-process the <code>&lt;meta&gt;</code> Tags Set.
+                  NOT re-process the `&lt;meta&gt;` Tags Set.
                 </li>
                 <li>
                   Each time a packet with a non-zero amount is fulfilled, the
@@ -312,7 +312,7 @@
       </p>
       <ul>
         <li>
-          After parsing the <code>&lt;meta&gt;</code> Tags Set, the browser
+          After parsing the `&lt;meta&gt;` Tags Set, the browser
           creates a new
           <a
             href="https://www.w3.org/TR/payment-request/#paymentrequest-interface"
@@ -366,8 +366,8 @@
       <section id="meta-tags-set">
         <h2>Meta Tags Set</h2>
         <p>
-          The <code>&lt;meta&gt;</code> Tags Set MUST be in the document's
-          <code>&lt;head&gt;</code>. The <code>&lt;meta&gt;</code> Tags Set
+          The `&lt;meta&gt;` Tags Set MUST be in the document's
+          [^head^]. The `&lt;meta&gt;` Tags Set
           allows the <a>user agent</a> to pay a site via Web Monetization by
           specifying a
           <a href="https://paymentpointers.org">Payment Pointer</a> or
@@ -378,7 +378,7 @@
           url.
         </p>
         <p>
-          The <code>name</code> of the <code>&lt;meta&gt;</code> tags all start
+          The <code>name</code> of the `&lt;meta&gt;` tags all start
           with <code>monetization</code>. The table below lists the different
           <code>name</code>s and the formats of their <code>content</code>.
           Currently there is only one tag, but this may be expanded in the
@@ -461,14 +461,13 @@
           </dt>
           <dd>
             Indicates that monetization has not yet started. This is set even if
-            there are no Web Monetization &lt;meta&lt; tags on the page.
+            there are no Web Monetization [^meta^] elements in the document.
           </dd>
           <dt>
             "<dfn>started</dfn>"
           </dt>
           <dd>
-            Indicates that monetization has started (i.e. the monetizationstart
-            event has been fired).
+            Indicates that monetization has started (i.e. the user agent fired the `"monetizationstart"` event).
           </dd>
         </dl>
       </section>
@@ -504,7 +503,7 @@
                 The first non-zero payment is successfully sent.
               </td>
               <td>
-                {{ Monetization }}
+                {{ Document/monetization }} attribute
               </td>
             </tr>
             <tr>
@@ -518,7 +517,7 @@
                 A payment is successfully made to the receiver.
               </td>
               <td>
-                {{ Monetization }}
+                {{ Document/monetization }}
               </td>
             </tr>
           </table>
@@ -535,13 +534,21 @@
                 readonly attribute DOMString paymentPointer;
                 readonly attribute DOMString requestId;
               };
-            </pre
-          >
+          </pre>
+          <section>
+              <h2><dfn>constructor()</dfn></h2>
+              <p>
+                The <dfn>constructor()</dfn> for {{MonetizationStartEvent}} behaves as follows:
+              </p>
+              <ol class="algorithm">
+                <li>...TBW...</li>
+              </ol>
+            </section>
           <section>
             <h2><dfn>paymentPointer</dfn> attribute</h2>
-            <p data-link-for="MonetizationStartEventInit">
+            <p>
               When getting, returns the value it was initialized with. See
-              <a>paymentPointer</a> member of <a>MonetizationStartEventInit</a>
+              {{MonetizationStartEventInit/paymentPointer}} member of {{MonetizationStartEventInit}}
               for more information.
             </p>
           </section>
@@ -579,34 +586,38 @@
               <dt><dfn>requestId</dfn> member</dt>
               <dd>
                 The Monetization ID (UUID V4) generated by the browser (see
-                <a href="#flow">Flow</a>).
+                [[[#flow]]]).
               </dd>
             </dl>
           </section>
         </section>
         <section
           data-dfn-for="MonetizationProgressEvent"
-          data-link-for="MonetizationProgressEvent"
         >
           <h2><dfn>MonetizationProgressEvent</dfn> interface</h2>
           <p>
             Dispatched every time an ILP packet with a non-zero amount has been
             fulfilled by the page's Web Monetization receiver (including
-            the first time, when
-            <code>monetizationstart</code> is also dispatched). This event MAY
-            NOT be emitted if there are no listeners for it on
-            <code>document.monetization</code>.
+            the first time, when `monetizationstart` event is also dispatched).
           </p>
           <pre class="idl">
-              [SecureContext, Exposed=Window]
-              interface MonetizationProgressEvent : Event {
-                constructor(DOMString type, optional MonetizationProgressEventInit eventInitDict = {});
-                readonly attribute DOMString amount;
-                readonly attribute DOMString assetCode;
-                readonly attribute DOMString assetScale;
-              };
-            </pre
-          >
+            [SecureContext, Exposed=Window]
+            interface MonetizationProgressEvent : Event {
+              constructor(DOMString type, optional MonetizationProgressEventInit eventInitDict = {});
+              readonly attribute DOMString amount;
+              readonly attribute DOMString assetCode;
+              readonly attribute DOMString assetScale;
+            };
+          </pre>
+          <section>
+            <h2><dfn>constructor()</dfn></h2>
+            <p>
+              The <dfn>constructor()</dfn> for {{MonetizationProgressEvent}} behaves as follows:
+            </p>
+            <ol class="algorithm">
+              <li>...TBW...</li>
+            </ol>
+          </section>
           <section>
             <h2><dfn>amount</dfn> attribute</h2>
             <p data-link-for="MonetizationProgressEventInit">
@@ -631,24 +642,20 @@
               <a>MonetizationProgressEventInit</a> for more information.
             </p>
           </section>
-          <section
-            data-dfn-for="MonetizationProgressEventInit"
-            data-link-for="MonetizationProgressEventInit"
-          >
+          <section data-dfn-for="MonetizationProgressEventInit">
             <h3><dfn>MonetizationProgressEventInit</dfn> dictionary</h3>
             <pre class="idl">
-                dictionary MonetizationProgressEventInit : EventInit {
-                  DOMString amount;
-                  DOMString assetCode;
-                  DOMString assetScale;
-                };
-              </pre
-            >
+              dictionary MonetizationProgressEventInit : EventInit {
+                DOMString amount;
+                DOMString assetCode;
+                DOMString assetScale;
+              };
+            </pre>
             <dl>
               <dt><dfn>amount</dfn> member</dt>
               <dd>
-                The destination amount <strong>received</strong> as specified in
-                the ILP packet
+                The destination amount <em>received</em> as specified in
+                the ILP packet.
               </dd>
               <dt><dfn>assetCode</dfn> member</dt>
               <dd>
@@ -666,16 +673,15 @@
       </section>
       <section id="http-headers">
         <h2>HTTP Headers</h2>
-        <h4 id="web-monetization-id"><code>Web-Monetization-Id</code></h4>
+        <h4>`Web-Monetization-Id`</h4>
         <p>
-          Contains the <code>Monetization ID</code> (currently referred to as
-          <code>requestId</code> in the events) that the browser generated. This
-          header MUST always be sent on SPSP queries for Web Monetization. This
-          value MUST be a UUID version 4.
+          Contains the `Monetization ID` (currently referred to as
+          {{MonetizationStartEvent/requestId}} in the {{MonetizationStartEvent}}) as a  a UUID version 4, which the user agent generated. This
+          header MUST always be sent on [[SPSP]] queries for Web Monetization.
         </p>
-        <pre class="http">
-Web-Monetization-Id: dcd479ad-7d8d-4210-956a-13c14b8c67eb</pre
-        >
+        <pre class="example http">
+          Web-Monetization-Id: dcd479ad-7d8d-4210-956a-13c14b8c67eb
+        </pre>
       </section>
     </section>
   </body>

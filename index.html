@@ -251,7 +251,7 @@
                 </li>
                 <li>
                   This MUST occur before the
-                  `monetizationstart` event is fired.
+                  `start` vent is fired.
                 </li>
                 <li>
                   This event is a {{ MonetizationStartEvent }}
@@ -260,7 +260,7 @@
                 </li>
                 <li>
                   The <a>user agent</a> also emits a
-                  {{ monetizationprogress }} event from
+                  {{ progress }} event from
                   <code>document.monetization</code>, corresponding to this
                   first packet. If there are no listeners the event MAY NOT be
                   emitted.
@@ -421,8 +421,8 @@
               [Exposed=Window]
               interface Monetization : EventTarget {
                 readonly attribute MonetizationState state;
-                attribute EventHandler onmonetizationstart;
-                attribute EventHandler onmonetizationprogress;
+                attribute EventHandler onstart;
+                attribute EventHandler onprogress;
               };
           </pre
         >
@@ -432,17 +432,17 @@
             A {{ Monetization }}'s <a>state</a> attribute exposes the current
             state of Web Monetization as a {{MonetizationState}} enum value.
           </dd>
-          <dt><dfn>onmonetizationstart</dfn> attribute</dt>
+          <dt><dfn>onstart</dfn> attribute</dt>
           <dd>
-            A {{ Monetization }}'s {{onmonetizationstart}} attribute is an
+            A {{ Monetization/onstart}} attribute is an
             {{ EventHandler }} for a {{ MonetizationStartEvent }} named
-            "<a>monetizationstart</a>".
+            "<a>start</a>".
           </dd>
-          <dt><dfn>onmonetizationprogress</dfn> attribute</dt>
+          <dt><dfn>onprogress</dfn> attribute</dt>
           <dd>
-            A {{ Monetization }}'s {{onmonetizationprogress}} attribute is an
+            A {{ Monetization/onprogress}} attribute is an
             {{ EventHandler }} for an {{ MonetizationStartEvent }} named
-            "<a>monetizationprogress</a>".
+            "<a>progress</a>".
           </dd>
         </dl>
       </section>
@@ -467,7 +467,7 @@
             "<dfn>started</dfn>"
           </dt>
           <dd>
-            Indicates that monetization has started (i.e. the user agent fired the `"monetizationstart"` event).
+            Indicates that monetization has started (i.e. the user agent fired the `"start"` event).
           </dd>
         </dl>
       </section>
@@ -494,7 +494,7 @@
             </tr>
             <tr>
               <td>
-                <code><dfn>monetizationstart</dfn></code>
+                <code><dfn>start</fn></code>
               </td>
               <td>
                 {{ MonetizationStartEvent }}
@@ -508,7 +508,7 @@
             </tr>
             <tr>
               <td>
-                <code><dfn>monetizationprogress</dfn></code>
+                <code><dfn>progress</dfn></code>
               </td>
               <td>
                 {{ MonetizationProgressEvent }}
@@ -524,7 +524,6 @@
         </section>
         <section
           data-dfn-for="MonetizationStartEvent"
-          data-link-for="MonetizationStartEvent"
         >
           <h2><dfn>MonetizationStartEvent</dfn> interface</h2>
           <pre class="idl">
@@ -536,7 +535,7 @@
               };
           </pre>
           <section>
-              <h2><dfn>constructor()</dfn></h2>
+              <h2>`constructor()`</h2>
               <p>
                 The <dfn>constructor()</dfn> for {{MonetizationStartEvent}} behaves as follows:
               </p>
@@ -548,8 +547,8 @@
             <h2><dfn>paymentPointer</dfn> attribute</h2>
             <p>
               When getting, returns the value it was initialized with. See
-              {{MonetizationStartEventInit/paymentPointer}} member of {{MonetizationStartEventInit}}
-              for more information.
+              {{MonetizationStartEventInit/paymentPointer}} member of
+              {{MonetizationStartEventInit}} for more information.
             </p>
           </section>
           <section>
@@ -598,7 +597,7 @@
           <p>
             Dispatched every time an ILP packet with a non-zero amount has been
             fulfilled by the page's Web Monetization receiver (including
-            the first time, when `monetizationstart` event is also dispatched).
+            the first time, when `start` vent is also dispatched).
           </p>
           <pre class="idl">
             [SecureContext, Exposed=Window]
@@ -610,7 +609,7 @@
             };
           </pre>
           <section>
-            <h2><dfn>constructor()</dfn></h2>
+            <h2>`constructor()`</h2>
             <p>
               The <dfn>constructor()</dfn> for {{MonetizationProgressEvent}} behaves as follows:
             </p>

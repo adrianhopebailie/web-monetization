@@ -254,13 +254,13 @@
                   `start` vent is fired.
                 </li>
                 <li>
-                  This event is a {{ MonetizationStartEvent }}
+                  This event is a {{MonetizationStartEvent}}
                   containing the Payment Setup Endpoint and the Monetization ID
                   as properties.
                 </li>
                 <li>
                   The <a>user agent</a> also emits a
-                  {{ progress }} event from
+                  {{progress}} event from
                   <code>document.monetization</code>, corresponding to this
                   first packet. If there are no listeners the event MAY NOT be
                   emitted.
@@ -285,7 +285,7 @@
                 <li>
                   Each time a packet with a non-zero amount is fulfilled, the
                   provider notifies the browser, and the browser emits a
-                  {{ MonetizationProgressEvent }}
+                  {{MonetizationProgressEvent}}
                   on
                   <code>document.monetization</code>. The event has details of
                   the packet. If there are no listeners the event MAY NOT be
@@ -343,10 +343,10 @@
           <ul>
             <li>
               The return value of <code>.show()</code> MUST return a Promise,
-              and must also implement the {{ EventTarget }}
+              and must also implement the {{EventTarget}}
               interface. The provider will emit
-              {{ MonetizationStartEvent }} and
-              {{ MonetizationProgressEvent }} events from this Promise to
+              {{MonetizationStartEvent}} and
+              {{MonetizationProgressEvent}} events from this Promise to
               communicate to the browser when payment occurs. The Promise MUST
               NOT resolve, because Web Monetization continues for the entire
               lifetime of a given meta tag. The Promise MAY reject if there is
@@ -415,33 +415,32 @@
           </pre
         >
       </section>
-      <section data-dfn-for="Monetization" data-link-for="Monetization">
+      <section data-dfn-for="Monetization">
         <h2><dfn>Monetization</dfn> interface</h2>
         <pre class="idl">
-              [Exposed=Window]
-              interface Monetization : EventTarget {
-                readonly attribute MonetizationState state;
-                attribute EventHandler onstart;
-                attribute EventHandler onprogress;
-              };
-          </pre
-        >
+          [Exposed=Window]
+          interface Monetization : EventTarget {
+            readonly attribute MonetizationState state;
+            attribute EventHandler onstart;
+            attribute EventHandler onprogress;
+          };
+        </pre>
         <dl>
           <dt><dfn>state</dfn> attribute</dt>
           <dd>
-            A {{ Monetization }}'s <a>state</a> attribute exposes the current
+            A {{Monetization/state}} attribute exposes the current
             state of Web Monetization as a {{MonetizationState}} enum value.
           </dd>
           <dt><dfn>onstart</dfn> attribute</dt>
           <dd>
-            A {{ Monetization/onstart}} attribute is an
-            {{ EventHandler }} for a {{ MonetizationStartEvent }} named
+            A {{Monetization/onstart}} attribute is an
+            {{EventHandler}} for a {{MonetizationStartEvent}} named
             "<a>start</a>".
           </dd>
           <dt><dfn>onprogress</dfn> attribute</dt>
           <dd>
-            A {{ Monetization/onprogress}} attribute is an
-            {{ EventHandler }} for an {{ MonetizationStartEvent }} named
+            A {{Monetization/onprogress}} attribute is an
+            {{EventHandler}} for an {{MonetizationStartEvent}} named
             "<a>progress</a>".
           </dd>
         </dl>
@@ -497,13 +496,13 @@
                 <code><dfn>start</fn></code>
               </td>
               <td>
-                {{ MonetizationStartEvent }}
+                {{MonetizationStartEvent}}
               </td>
               <td>
                 The first non-zero payment is successfully sent.
               </td>
               <td>
-                {{ Document/monetization }} attribute
+                {{Document/monetization}} attribute
               </td>
             </tr>
             <tr>
@@ -511,13 +510,13 @@
                 <code><dfn>progress</dfn></code>
               </td>
               <td>
-                {{ MonetizationProgressEvent }}
+                {{MonetizationProgressEvent}}
               </td>
               <td>
                 A payment is successfully made to the receiver.
               </td>
               <td>
-                {{ Document/monetization }}
+                {{Document/monetization}}
               </td>
             </tr>
           </table>
@@ -527,12 +526,12 @@
         >
           <h2><dfn>MonetizationStartEvent</dfn> interface</h2>
           <pre class="idl">
-              [SecureContext, Exposed=Window]
-              interface MonetizationStartEvent : Event {
-                constructor(DOMString type, optional MonetizationStartEventInit eventInitDict = {});
-                readonly attribute DOMString paymentPointer;
-                readonly attribute DOMString requestId;
-              };
+            [SecureContext, Exposed=Window]
+            interface MonetizationStartEvent : Event {
+              constructor(DOMString type, MonetizationStartEventInit eventInitDict);
+              readonly attribute DOMString paymentPointer;
+              readonly attribute DOMString requestId;
+            };
           </pre>
           <section>
               <h2>`constructor()`</h2>
@@ -553,9 +552,9 @@
           </section>
           <section>
             <h2><dfn>requestId</dfn> attribute</h2>
-            <p data-link-for="MonetizationStartEventInit">
+            <p>
               When getting, returns the value it was initialized with. See
-              <a>requestId</a> member of <a>MonetizationStartEventInit</a> for
+              {{MonetizationStartEventInit/requestId}} member of {{MonetizationStartEventInit}} for
               more information.
             </p>
           </section>
@@ -589,9 +588,7 @@
             </dl>
           </section>
         </section>
-        <section
-          data-dfn-for="MonetizationProgressEvent"
-        >
+        <section data-dfn-for="MonetizationProgressEvent">
           <h2><dfn>MonetizationProgressEvent</dfn> interface</h2>
           <p>
             Dispatched every time an ILP packet with a non-zero amount has been

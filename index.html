@@ -561,7 +561,6 @@
           </section>
           <section
             data-dfn-for="MonetizationStartEventInit"
-            data-link-for="MonetizationStartEventInit"
           >
             <h3><dfn>MonetizationStartEventInit</dfn> dictionary</h3>
             <p>
@@ -571,8 +570,8 @@
             </p>
             <pre class="idl">
                 dictionary MonetizationStartEventInit : EventInit {
-                  DOMString paymentPointer;
-                  DOMString requestId;
+                  required DOMString paymentPointer;
+                  required DOMString requestId;
                 };
               </pre
             >
@@ -602,7 +601,7 @@
           <pre class="idl">
             [SecureContext, Exposed=Window]
             interface MonetizationProgressEvent : Event {
-              constructor(DOMString type, optional MonetizationProgressEventInit eventInitDict = {});
+              constructor(DOMString type, MonetizationProgressEventInit eventInitDict);
               readonly attribute DOMString amount;
               readonly attribute DOMString assetCode;
               readonly attribute DOMString assetScale;
@@ -619,35 +618,35 @@
           </section>
           <section>
             <h2><dfn>amount</dfn> attribute</h2>
-            <p data-link-for="MonetizationProgressEventInit">
+            <p>
               When getting, returns the value it was initialized with. See
-              <a>amount</a> member of <a>MonetizationProgressEventInit</a>
+              {{MonetizationProgressEventInit/amount}} member of {{MonetizationProgressEventInit}}
               for more information.
             </p>
           </section>
           <section>
             <h2><dfn>assetCode</dfn> attribute</h2>
-            <p data-link-for="MonetizationProgressEventInit">
+            <p>
               When getting, returns the value it was initialized with. See
-              <a>assetCode</a> member of
-              <a>MonetizationProgressEventInit</a> for more information.
+              {{MonetizationProgressEventInit/assetCode}} member of
+              {{MonetizationProgressEventInit}} for more information.
             </p>
           </section>
           <section>
             <h2><dfn>assetScale</dfn> attribute</h2>
-            <p data-link-for="MonetizationProgressEventInit">
+            <p>
               When getting, returns the value it was initialized with. See
-              <a>assetScale</a> member of
-              <a>MonetizationProgressEventInit</a> for more information.
+              {{MonetizationProgressEventInit/assetScale}} member of
+              {{MonetizationProgressEventInit}} for more information.
             </p>
           </section>
           <section data-dfn-for="MonetizationProgressEventInit">
             <h3><dfn>MonetizationProgressEventInit</dfn> dictionary</h3>
             <pre class="idl">
               dictionary MonetizationProgressEventInit : EventInit {
-                DOMString amount;
-                DOMString assetCode;
-                DOMString assetScale;
+                required DOMString amount;
+                required DOMString assetCode;
+                required DOMString assetScale;
               };
             </pre>
             <dl>

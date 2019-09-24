@@ -418,7 +418,7 @@
       <section data-dfn-for="Monetization">
         <h2><dfn>Monetization</dfn> interface</h2>
         <pre class="idl">
-          [Exposed=Window]
+          [Exposed=Window, SecureContext]
           interface Monetization : EventTarget {
             readonly attribute MonetizationState state;
             attribute EventHandler onstart;

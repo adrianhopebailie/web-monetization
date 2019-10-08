@@ -251,7 +251,7 @@
                 </li>
                 <li>
                   This MUST occur before the
-                  `start` event is fired.
+                  `monetizationstart` event is fired.
                 </li>
                 <li>
                   This event is a {{MonetizationStartEvent}}
@@ -260,7 +260,7 @@
                 </li>
                 <li>
                   The <a>user agent</a> also emits a
-                  {{progress}} event from
+                  {{monetizationprogress}} event from
                   <code>document.monetization</code>, corresponding to this
                   first packet. If there are no listeners the event MAY NOT be
                   emitted.
@@ -421,8 +421,8 @@
           [Exposed=Window, SecureContext]
           interface Monetization : EventTarget {
             readonly attribute MonetizationState state;
-            attribute EventHandler onstart;
-            attribute EventHandler onprogress;
+            attribute EventHandler onmonetizationstart;
+            attribute EventHandler onmonetizationprogress;
           };
         </pre>
         <dl>
@@ -431,17 +431,17 @@
             A {{Monetization/state}} attribute exposes the current
             state of Web Monetization as a {{MonetizationState}} enum value.
           </dd>
-          <dt><dfn>onstart</dfn> attribute</dt>
+          <dt><dfn>onmonetizationstart</dfn> attribute</dt>
           <dd>
-            A {{Monetization/onstart}} attribute is an
+            A {{Monetization/onmonetizationstart}} attribute is an
             {{EventHandler}} for a {{MonetizationStartEvent}} named
-            "<a>start</a>".
+            "<a>monetizationstart</a>".
           </dd>
-          <dt><dfn>onprogress</dfn> attribute</dt>
+          <dt><dfn>onmonetizationprogress</dfn> attribute</dt>
           <dd>
-            A {{Monetization/onprogress}} attribute is an
-            {{EventHandler}} for an {{MonetizationStartEvent}} named
-            "<a>progress</a>".
+            A {{Monetization/onmonetizationprogress}} attribute is an
+            {{EventHandler}} for an {{MonetizationProgressEvent}} named
+            "<a>monetizationprogress</a>".
           </dd>
         </dl>
       </section>
@@ -466,7 +466,7 @@
             "<dfn>started</dfn>"
           </dt>
           <dd>
-            Indicates that monetization has started (i.e. the user agent fired the `"start"` event).
+            Indicates that monetization has started (i.e. the user agent fired the `"monetizationstart"` event).
           </dd>
         </dl>
       </section>
@@ -493,7 +493,7 @@
             </tr>
             <tr>
               <td>
-                <code><dfn>start</fn></code>
+                <code><dfn>monetizartionstart</dfn></code>
               </td>
               <td>
                 {{MonetizationStartEvent}}
@@ -507,7 +507,7 @@
             </tr>
             <tr>
               <td>
-                <code><dfn>progress</dfn></code>
+                <code><dfn>monetizationprogress</dfn></code>
               </td>
               <td>
                 {{MonetizationProgressEvent}}
@@ -593,7 +593,7 @@
           <p>
             Dispatched every time an ILP packet with a non-zero amount has been
             fulfilled by the page's Web Monetization receiver (including
-            the first time, when `start` vent is also dispatched).
+            the first time, when `monetizationstart` event is also dispatched).
           </p>
           <pre class="idl">
             [SecureContext, Exposed=Window]

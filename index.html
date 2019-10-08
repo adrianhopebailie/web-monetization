@@ -424,6 +424,8 @@
             readonly attribute MonetizationState state;
             attribute EventHandler onmonetizationstart;
             attribute EventHandler onmonetizationprogress;
+            attribute EventHandler onmonetizationpending;
+            attribute EventHandler onmonetizationstop;
           };
         </pre>
         <dl>
@@ -443,6 +445,18 @@
             A {{Monetization/onmonetizationprogress}} attribute is an
             {{EventHandler}} for an {{MonetizationProgressEvent}} named
             "<a>monetizationprogress</a>".
+          </dd>
+          <dt><dfn>onmonetizationpending</dfn> attribute</dt>
+          <dd>
+            A {{Monetization/onmonetizationpending}} attribute is an
+            {{EventHandler}} for an {{MonetizationPendingEvent}} named
+            "<a>monetizationpending</a>".
+          </dd>
+          <dt><dfn>onmonetizationprogress</dfn> attribute</dt>
+          <dd>
+            A {{Monetization/onmonetizationstop}} attribute is an
+            {{EventHandler}} for an {{MonetizationStopEvent}} named
+            "<a>monetizationstop</a>".
           </dd>
         </dl>
       </section>
@@ -473,13 +487,13 @@
             "<dfn>stopped</dfn>"
           </dt>
           <dd>
-            In the interest of KISS and privacy, this state is intentionally ambiguous:
+            In the interest of KISS and privacy, this state is intentionally ambiguous and could mean:
             <ul>
-              <li>monetization may not be supported (no provider enabled)</li>
-              <li>may not have started yet</li>
-              <li>paused (potentially resumed)</li>
-              <li>finished completely (awaiting another request)</li>
-              <li>payment request denied by user intervention</li>
+              <li>Monetization may not be supported (no provider enabled)</li>
+              <li>May not have started yet</li>
+              <li>Paused (potentially resumed)</li>
+              <li>Finished completely (awaiting another request)</li>
+              <li>Payment request denied by user intervention</li>
             </ul>
           </dd>
         </dl>
@@ -507,7 +521,22 @@
             </tr>
             <tr>
               <td>
-                <code><dfn>monetizartionstart</dfn></code>
+                <code><dfn>monetizationpending</dfn></code>
+              </td>
+              <td>
+                {{MonetizationPendingEvent}}
+              </td>
+              <td>
+                When payment has been requested due to presence of a meta tag and the stream is initiating,
+                yet no payment has been made.
+              </td>
+              <td>
+                {{Document/monetization}} attribute
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <code><dfn>monetizationstart</dfn></code>
               </td>
               <td>
                 {{MonetizationStartEvent}}
@@ -528,6 +557,20 @@
               </td>
               <td>
                 A payment is successfully made to the receiver.
+              </td>
+              <td>
+                {{Document/monetization}}
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <code><dfn>monetizationstop</dfn></code>
+              </td>
+              <td>
+                {{MonetizationStopEvent}}
+              </td>
+              <td>
+                When payment is stopped or paused.
               </td>
               <td>
                 {{Document/monetization}}

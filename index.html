@@ -150,7 +150,7 @@
       </p>
       <ol>
         <li>
-          The <a>user agent</a> sets {{Monetization/state}} to "{{MonetizationState/pending}}".
+          The <a>user agent</a> sets {{Monetization/state}} to "{{MonetizationState/stopped}}".
         </li>
         <li>
           <p>
@@ -238,6 +238,9 @@
                   never reached, and make payment adjustments by limiting
                   throughput.
                 </li>
+                <li>
+                  The <a>user agent</a> sets {{Monetization/state}} to "{{MonetizationState/pending}}".
+                </li>
               </ul>
             </li>
             <li>
@@ -245,9 +248,7 @@
               non-zero amount, the provider notifies the browser:
               <ul>
                 <li>
-                  The <a>user agent</a> sets
-                  <code>document.monetization.state</code> to
-                  <code>started</code>.
+                  The <a>user agent</a> sets {{Monetization/state}} to "{{MonetizationState/started}}".
                 </li>
                 <li>
                   This MUST occur before the
@@ -294,7 +295,7 @@
                 <li>
                   When a stream is closed the
                   <code>document.monetization.state</code> MUST be set back to
-                  'pending'
+                  'stopped'
                 </li>
               </ul>
             </li>
@@ -450,7 +451,8 @@
         <pre class="idl">
             enum MonetizationState {
               "pending",
-              "started"
+              "started",
+              "stopped"
             };
           </pre
         >
@@ -459,14 +461,26 @@
             "<dfn>pending</dfn>"
           </dt>
           <dd>
-            Indicates that monetization has not yet started. This is set even if
-            there are no Web Monetization [^meta^] elements in the document.
+            Indicates that monetization streaming has been initiated yet have no receipt of packets sent.
           </dd>
           <dt>
             "<dfn>started</dfn>"
           </dt>
           <dd>
             Indicates that monetization has started (i.e. the user agent fired the `"monetizationstart"` event).
+          </dd>
+          <dt>
+            "<dfn>stopped</dfn>"
+          </dt>
+          <dd>
+            In the interest of KISS and privacy, this state is intentionally ambiguous:
+            <ul>
+              <li>monetization may not be supported (no provider enabled)</li>
+              <li>may not have started yet</li>
+              <li>paused (potentially resumed)</li>
+              <li>finished completely (awaiting another request)</li>
+              <li>payment request denied by user intervention</li>
+            </ul>
           </dd>
         </dl>
       </section>

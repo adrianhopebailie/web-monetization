@@ -392,6 +392,7 @@ Please submit a PR if you are aware of updates to the lists below.
 
 - [XRP Tipbot](https://www.xrptipbot.com/)
 - [Stronghold](https://stronghold.co/)
+- [GateHub](https://gatehub.net/)
 
 ### WM Senders
 

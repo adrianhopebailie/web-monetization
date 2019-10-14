@@ -1,7 +1,5 @@
-# Web Monetization
+# We've Moved
 
-This is the repository for Web Monetization. You're welcome to [[contribute]](CONTRIBUTING.md)!
+The repository for Web Monetization has moved.
 
-More details in the [[explainer]](explainer.md).
-
-Early view of the [Specification](https://adrianhopebailie.github.io/web-monetization/).
+View the [[explainer]](https://webmonetization.org/docs/explainer.html) and the [specification](https://webmonetization.org/specification.html) on the website.

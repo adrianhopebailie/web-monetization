@@ -150,7 +150,7 @@
       </p>
       <ol>
         <li>
-          The <a>user agent</a> sets {{Monetization/state}} to "{{MonetizationState/pending}}".
+          The <a>user agent</a> sets {{Monetization/state}} to "{{MonetizationState/stopped}}".
         </li>
         <li>
           <p>
@@ -238,6 +238,9 @@
                   never reached, and make payment adjustments by limiting
                   throughput.
                 </li>
+                <li>
+                  The <a>user agent</a> sets {{Monetization/state}} to "{{MonetizationState/pending}}".
+                </li>
               </ul>
             </li>
             <li>
@@ -245,13 +248,11 @@
               non-zero amount, the provider notifies the browser:
               <ul>
                 <li>
-                  The <a>user agent</a> sets
-                  <code>document.monetization.state</code> to
-                  <code>started</code>.
+                  The <a>user agent</a> sets {{Monetization/state}} to "{{MonetizationState/started}}".
                 </li>
                 <li>
                   This MUST occur before the
-                  `start` event is fired.
+                  `monetizationstart` event is fired.
                 </li>
                 <li>
                   This event is a {{MonetizationStartEvent}}
@@ -260,7 +261,7 @@
                 </li>
                 <li>
                   The <a>user agent</a> also emits a
-                  {{progress}} event from
+                  {{monetizationprogress}} event from
                   <code>document.monetization</code>, corresponding to this
                   first packet.
                 </li>
@@ -290,9 +291,8 @@
                   the packet.
                 </li>
                 <li>
-                  When a stream is closed the
-                  <code>document.monetization.state</code> MUST be set back to
-                  'pending'
+                  When a stream is closed the <a>user agent</a> MUST set {{Monetization/state}}
+                  back to "{{MonetizationState/stopped}}".
                 </li>
               </ul>
             </li>
@@ -419,8 +419,10 @@
           [Exposed=Window, SecureContext]
           interface Monetization : EventTarget {
             readonly attribute MonetizationState state;
-            attribute EventHandler onstart;
-            attribute EventHandler onprogress;
+            attribute EventHandler onmonetizationstart;
+            attribute EventHandler onmonetizationprogress;
+            attribute EventHandler onmonetizationpending;
+            attribute EventHandler onmonetizationstop;
           };
         </pre>
         <dl>
@@ -429,17 +431,29 @@
             A {{Monetization/state}} attribute exposes the current
             state of Web Monetization as a {{MonetizationState}} enum value.
           </dd>
-          <dt><dfn>onstart</dfn> attribute</dt>
+          <dt><dfn>onmonetizationstart</dfn> attribute</dt>
           <dd>
-            A {{Monetization/onstart}} attribute is an
+            A {{Monetization/onmonetizationstart}} attribute is an
             {{EventHandler}} for a {{MonetizationStartEvent}} named
-            "<a>start</a>".
+            "<a>monetizationstart</a>".
           </dd>
-          <dt><dfn>onprogress</dfn> attribute</dt>
+          <dt><dfn>onmonetizationprogress</dfn> attribute</dt>
           <dd>
-            A {{Monetization/onprogress}} attribute is an
-            {{EventHandler}} for an {{MonetizationStartEvent}} named
-            "<a>progress</a>".
+            A {{Monetization/onmonetizationprogress}} attribute is an
+            {{EventHandler}} for an {{MonetizationProgressEvent}} named
+            "<a>monetizationprogress</a>".
+          </dd>
+          <dt><dfn>onmonetizationpending</dfn> attribute</dt>
+          <dd>
+            A {{Monetization/onmonetizationpending}} attribute is an
+            {{EventHandler}} for an {{MonetizationPendingEvent}} named
+            "<a>monetizationpending</a>".
+          </dd>
+          <dt><dfn>onmonetizationstop</dfn> attribute</dt>
+          <dd>
+            A {{Monetization/onmonetizationstop}} attribute is an
+            {{EventHandler}} for an {{MonetizationStopEvent}} named
+            "<a>monetizationstop</a>".
           </dd>
         </dl>
       </section>
@@ -448,7 +462,8 @@
         <pre class="idl">
             enum MonetizationState {
               "pending",
-              "started"
+              "started",
+              "stopped"
             };
           </pre
         >
@@ -457,14 +472,26 @@
             "<dfn>pending</dfn>"
           </dt>
           <dd>
-            Indicates that monetization has not yet started. This is set even if
-            there are no Web Monetization [^meta^] elements in the document.
+            Indicates that monetization streaming has been initiated yet have no receipt of packets sent.
           </dd>
           <dt>
             "<dfn>started</dfn>"
           </dt>
           <dd>
-            Indicates that monetization has started (i.e. the user agent fired the `"start"` event).
+            Indicates that monetization has started (i.e. the user agent fired the `"monetizationstart"` event).
+          </dd>
+          <dt>
+            "<dfn>stopped</dfn>"
+          </dt>
+          <dd>
+            In the interest of KISS and privacy, this state is intentionally ambiguous and could mean:
+            <ul>
+              <li>Monetization may not be supported (no provider enabled)</li>
+              <li>May not have started yet</li>
+              <li>Paused (potentially resumed)</li>
+              <li>Finished completely (awaiting another request)</li>
+              <li>Payment request denied by user intervention</li>
+            </ul>
           </dd>
         </dl>
       </section>
@@ -491,7 +518,21 @@
             </tr>
             <tr>
               <td>
-                <code><dfn>start</fn></code>
+                <code><dfn>monetizationpending</dfn></code>
+              </td>
+              <td>
+                {{MonetizationPendingEvent}}
+              </td>
+              <td>
+                Payment initialized yet first payment not sent.
+              </td>
+              <td>
+                {{Document/monetization}} attribute
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <code><dfn>monetizationstart</dfn></code>
               </td>
               <td>
                 {{MonetizationStartEvent}}
@@ -505,13 +546,27 @@
             </tr>
             <tr>
               <td>
-                <code><dfn>progress</dfn></code>
+                <code><dfn>monetizationprogress</dfn></code>
               </td>
               <td>
                 {{MonetizationProgressEvent}}
               </td>
               <td>
                 A payment is successfully made to the receiver.
+              </td>
+              <td>
+                {{Document/monetization}}
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <code><dfn>monetizationstop</dfn></code>
+              </td>
+              <td>
+                {{MonetizationStopEvent}}
+              </td>
+              <td>
+                When payment is stopped or paused.
               </td>
               <td>
                 {{Document/monetization}}
@@ -586,12 +641,145 @@
             </dl>
           </section>
         </section>
+
+        <section
+          data-dfn-for="MonetizationStopEvent"
+        >
+          <h2><dfn>MonetizationStopEvent</dfn> interface</h2>
+          <pre class="idl">
+            [SecureContext, Exposed=Window]
+            interface MonetizationStopEvent : Event {
+              constructor(DOMString type, MonetizationStopEventInit eventInitDict);
+              readonly attribute DOMString paymentPointer;
+              readonly attribute DOMString requestId;
+            };
+          </pre>
+          <section>
+              <h2>`constructor()`</h2>
+              <p>
+                The <dfn>constructor()</dfn> for {{MonetizationStopEvent}} behaves as follows:
+              </p>
+              <ol class="algorithm">
+                <li>...TBW...</li>
+              </ol>
+            </section>
+          <section>
+            <h2><dfn>paymentPointer</dfn> attribute</h2>
+            <p>
+              When getting, returns the value it was initialized with. See
+              {{MonetizationStopEventInit/paymentPointer}} member of
+              {{MonetizationStopEventInit}} for more information.
+            </p>
+          </section>
+          <section>
+            <h2><dfn>requestId</dfn> attribute</h2>
+            <p>
+              When getting, returns the value it was initialized with. See
+              {{MonetizationStopEventInit/requestId}} member of {{MonetizationStopEventInit}} for
+              more information.
+            </p>
+          </section>
+          <section
+            data-dfn-for="MonetizationStopEventInit"
+          >
+            <h3><dfn>MonetizationStopEventInit</dfn> dictionary</h3>
+            <p>
+              Dispatched once monetization has been stopped (or paused)
+            </p>
+            <pre class="idl">
+                dictionary MonetizationStopEventInit : EventInit {
+                  required DOMString paymentPointer;
+                  required DOMString requestId;
+                };
+              </pre
+            >
+            <dl>
+              <dt><dfn>paymentPointer</dfn> member</dt>
+              <dd>
+                A string representing the Payment Pointer resolved from the
+                <code>&lt;meta name=&quot;monetization&quot;&gt;</code> tag.
+              </dd>
+              <dt><dfn>requestId</dfn> member</dt>
+              <dd>
+                The Monetization ID (UUID V4) generated by the browser (see
+                [[[#flow]]]).
+              </dd>
+            </dl>
+          </section>
+        </section>
+
+        <section
+                data-dfn-for="MonetizationPendingEvent"
+        >
+          <h2><dfn>MonetizationPendingEvent</dfn> interface</h2>
+          <pre class="idl">
+            [SecureContext, Exposed=Window]
+            interface MonetizationPendingEvent : Event {
+              constructor(DOMString type, MonetizationPendingEventInit eventInitDict);
+              readonly attribute DOMString paymentPointer;
+              readonly attribute DOMString requestId;
+            };
+          </pre>
+          <section>
+            <h2>`constructor()`</h2>
+            <p>
+              The <dfn>constructor()</dfn> for {{MonetizationPendingEvent}} behaves as follows:
+            </p>
+            <ol class="algorithm">
+              <li>...TBW...</li>
+            </ol>
+          </section>
+          <section>
+            <h2><dfn>MonetizationPendingEvent/paymentPointer</dfn> attribute</h2>
+            <p>
+              When getting, returns the value it was initialized with. See
+              {{MonetizationPendingEventInit/paymentPointer}} member of
+              {{MonetizationPendingEventInit}} for more information.
+            </p>
+          </section>
+          <section>
+            <h2><dfn>MonetizationPendingEvent/requestId</dfn> attribute</h2>
+            <p>
+              When getting, returns the value it was initialized with. See
+              {{MonetizationPendingEventInit/requestId}} member of {{MonetizationPendingEventInit}} for
+              more information.
+            </p>
+          </section>
+          <section
+                  data-dfn-for="MonetizationPendingEventInit"
+          >
+            <h3><dfn>MonetizationPendingEventInit</dfn> dictionary</h3>
+            <p>
+              Dispatched once monetization has been pendingped (or paused)
+            </p>
+            <pre class="idl">
+                dictionary MonetizationPendingEventInit : EventInit {
+                  required DOMString paymentPointer;
+                  required DOMString requestId;
+                };
+              </pre
+              >
+            <dl>
+              <dt><dfn>paymentPointer</dfn> member</dt>
+              <dd>
+                A string representing the Payment Pointer resolved from the
+                <code>&lt;meta name=&quot;monetization&quot;&gt;</code> tag.
+              </dd>
+              <dt><dfn>requestId</dfn> member</dt>
+              <dd>
+                The Monetization ID (UUID V4) generated by the browser (see
+                [[[#flow]]]).
+              </dd>
+            </dl>
+          </section>
+        </section>
+
         <section data-dfn-for="MonetizationProgressEvent">
           <h2><dfn>MonetizationProgressEvent</dfn> interface</h2>
           <p>
             Dispatched every time an ILP packet with a non-zero amount has been
             fulfilled by the page's Web Monetization receiver (including
-            the first time, when `start` vent is also dispatched).
+            the first time, when `monetizationstart` event is also dispatched).
           </p>
           <pre class="idl">
             [SecureContext, Exposed=Window]
@@ -600,6 +788,8 @@
               readonly attribute DOMString amount;
               readonly attribute DOMString assetCode;
               readonly attribute DOMString assetScale;
+              readonly attribute DOMString paymentPointer;
+              readonly attribute DOMString requestId;
             };
           </pre>
           <section>
@@ -635,6 +825,23 @@
               {{MonetizationProgressEventInit}} for more information.
             </p>
           </section>
+          <section>
+            <h2><dfn>paymentPointer</dfn> attribute</h2>
+            <p>
+              When getting, returns the value it was initialized with. See
+              {{MonetizationProgressEventInit/paymentPointer}} member of
+              {{MonetizationProgressEventInit}} for more information.
+            </p>
+          </section>
+          <section>
+            <h2><dfn>requestId</dfn> attribute</h2>
+            <p>
+              When getting, returns the value it was initialized with. See
+              {{MonetizationProgressEventInit/requestId}} member of {{MonetizationProgressEventInit}} for
+              more information.
+            </p>
+          </section>
+
           <section data-dfn-for="MonetizationProgressEventInit">
             <h3><dfn>MonetizationProgressEventInit</dfn> dictionary</h3>
             <pre class="idl">
@@ -642,6 +849,8 @@
                 required DOMString amount;
                 required DOMString assetCode;
                 required DOMString assetScale;
+                required DOMString paymentPointer;
+                required DOMString requestId;
               };
             </pre>
             <dl>
@@ -659,6 +868,16 @@
                 The scale of the amount. For example, USD would have an
                 <code>assetScale</code> of <code>2</code> when denominated in
                 cents.
+              </dd>
+              <dt><dfn>paymentPointer</dfn> member</dt>
+              <dd>
+                A string representing the Payment Pointer resolved from the
+                <code>&lt;meta name=&quot;monetization&quot;&gt;</code> tag.
+              </dd>
+              <dt><dfn>requestId</dfn> member</dt>
+              <dd>
+                The Monetization ID (UUID V4) generated by the browser (see
+                [[[#flow]]]).
               </dd>
             </dl>
           </section>
